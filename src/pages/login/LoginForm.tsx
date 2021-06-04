@@ -35,7 +35,7 @@ export default function LoginForm() {
 
     async function submit(event: any) {
         event.preventDefault();
-        fetch('http://localhost:3001/api/login', {
+        fetch('https://proxy.heidenis.com/shopping-list/api/login', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
