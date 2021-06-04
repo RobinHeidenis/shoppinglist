@@ -28,19 +28,27 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-interface LoginFormProps {
-    authenticateFunction: (username: string, password: string) => Promise<boolean>
-}
-
-export default function LoginForm(props: LoginFormProps) {
+export default function LoginForm() {
     const classes = useStyles();
     const history = useHistory();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    async function submit() {
-        if(await props.authenticateFunction(username, password)) history.push("/")
-        else alert("faillure")
+    async function submit(event: any) {
+        event.preventDefault();
+        fetch('http://localhost:3001/api/login', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({username: username, password: password})
+        }).then((r) => r.json().then(r => {
+            if(!r.status) {
+                localStorage.setItem("authToken", r.accessToken);
+                localStorage.setItem("refreshToken", r.refreshToken);
+                history.push("/")
+            }
+        }))
         return false;
     }
 
