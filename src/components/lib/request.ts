@@ -1,3 +1,5 @@
+import history from "./history";
+
 export default async function request(path: string, data = {}) {
     if(Object.keys(data).length !== 0) {
         const response = await fetch('http://localhost:3001/api/' + path, {
@@ -8,7 +10,7 @@ export default async function request(path: string, data = {}) {
             },
             body: JSON.stringify(data)
         })
-        if(!response.ok) window.location.href = '/login';
+        if(!response.ok) history.push("/login");
         return response.json();
     } else {
         const response = await fetch('http://localhost:3001/api/' + path, {
@@ -16,7 +18,7 @@ export default async function request(path: string, data = {}) {
                 'Authorization': 'Bearer ' + localStorage.getItem('authToken')
             }
         })
-        if(!response.ok) window.location.href = '/login';
+        if(!response.ok) history.push("/login")
         return response.json()
     }
 }
