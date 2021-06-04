@@ -2,7 +2,7 @@ import {AppBar, IconButton, Toolbar, Typography} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import React, {FC, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {useHistory} from "react-router-dom";
+import history from "./lib/history";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export const ContextualAppBar: FC = (): JSX.Element => {
     const classes = useStyles();
     const [title, setTitle] = useState<string>("Add item");
-    const history = useHistory();
 
     const goBackToPreviousPage = (): void => {
         history.push("/");

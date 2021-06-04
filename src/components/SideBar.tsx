@@ -5,8 +5,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListIcon from "@material-ui/icons/List";
-import {Link} from 'react-router-dom';
 import SettingsIcon from '@material-ui/icons/Settings';
+import history from "./lib/history";
 
 interface SideBarProps {
     updateMenuState: (newValue: boolean) => void;
@@ -23,13 +23,15 @@ export default function SwipeableTemporaryDrawer({menuOpen, updateMenuState}: Si
             >
                 <div>
                     <List>
-                        <ListItem button key="List" component={Link} to={"/"} onClick={() => {
+                        <ListItem button key="List" onClick={() => {
+                            history.push("/")
                             updateMenuState(false)
                         }}>
                             <ListItemIcon><ListIcon/></ListItemIcon>
                             <ListItemText primary="Shopping list"/>
                         </ListItem>
-                        <ListItem button key="Settings" component={Link} to={"/settings"} onClick={() => {
+                        <ListItem button key="Settings" onClick={() => {
+                            history.push("/settings")
                             updateMenuState(false);
                         }}>
                             <ListItemIcon><SettingsIcon/></ListItemIcon>

@@ -1,5 +1,3 @@
-import {useHistory} from "react-router-dom";
-
 export default async function request(path: string, data = {}) {
     if(Object.keys(data).length !== 0) {
         const response = await fetch('http://localhost:3001/api/' + path, {

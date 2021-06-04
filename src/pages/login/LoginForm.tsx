@@ -6,7 +6,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {useHistory} from "react-router-dom";
+import history from "../../components/lib/history";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -30,7 +30,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LoginForm() {
     const classes = useStyles();
-    const history = useHistory();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 

@@ -3,11 +3,11 @@ import MenuIcon from "@material-ui/icons/Menu";
 import React, {useContext, useState} from "react";
 import SwipeableTemporaryDrawer from "./SideBar";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {useHistory} from "react-router-dom";
 import {MoreVert, Redeem} from "@material-ui/icons";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import request from "./lib/request";
 import {ShoppingListContext} from "../contexts/ShoppingListContext";
+import history from "./lib/history";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,7 +29,6 @@ interface props {
 }
 
 export default function NavBar(props: props) {
-    const history = useHistory();
     const classes = useStyles();
     const { items, setItems } = useContext(ShoppingListContext);
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
