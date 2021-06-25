@@ -13,4 +13,10 @@ export default interface Item {
     sequence: number;
 }
 
+export interface SequenceItem {
+    id: number;
+    sequence: number;
+}
+
 export type unsubmittedItem = Omit<Item, 'id'|'status'|'sequence'>;
+

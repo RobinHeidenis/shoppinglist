@@ -30,12 +30,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LoginForm() {
     const classes = useStyles();
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState();
+    const [password, setPassword] = useState();
 
     async function submit(event: any) {
+        if (!process.env.REACT_APP_API_URL) throw new Error("EVENTS_URL environment variable has not been set.");
         event.preventDefault();
-        fetch('https://proxy.heidenis.com/shopping-list/api/login', {
+        fetch(process.env.REACT_APP_API_URL + 'login', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'

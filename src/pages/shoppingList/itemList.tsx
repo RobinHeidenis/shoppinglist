@@ -4,21 +4,21 @@ import LoadingList from "../../components/LoadingList";
 import item, {unsubmittedItem} from "../../interfaces/item";
 import AddItemModal from "../../components/AddItemModal";
 import EditItemModal from "../../components/EditItemModal";
-import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from "react";
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import DragDropList from "../../components/dragDropList";
 import request from "../../components/lib/request";
+import {ShoppingListContext} from "../../contexts/ShoppingListContext";
 
 interface propsInterface {
-    items: item[],
-    setItems: Dispatch<SetStateAction<item[]>>,
     setIsOnItemList: (newValue: boolean) => void;
 }
 
-export default function ItemList({items, setItems, setIsOnItemList}: propsInterface) {
+export default function ItemList({setIsOnItemList}: propsInterface) {
     const [isLoading, updateIsLoading] = useState(true);
     const [isEditDialogOpen, updateIsEditDialogOpen] = useState(false);
     const [SnackbarOpen, setSnackbarOpen] = useState(false);
     const [editingItem, updateEditingItem] = useState({id: 0, name: "", quantity: "", url: "", status: 0} as item);
+    const context = useContext(ShoppingListContext);
 
     const addItem = useCallback((item: unsubmittedItem): boolean => {
         if (!window.navigator.onLine) {
@@ -28,11 +28,10 @@ export default function ItemList({items, setItems, setIsOnItemList}: propsInterf
         request('addItem', {
             item: {name: item.name, quantity: item.quantity, url: item.url}
         })
-            .then(result => setItems(items.concat(result.item)))
             .catch(() => setSnackbarOpen(true));
 
         return true;
-    }, [items, setItems, setSnackbarOpen]);
+    }, [context, setSnackbarOpen]);
 
     const editItem = useCallback( (item: item): boolean => {
         if (!window.navigator.onLine) {
@@ -71,14 +70,14 @@ export default function ItemList({items, setItems, setIsOnItemList}: propsInterf
 
     useEffect(() => {
         setIsOnItemList(true);
-        request('getItemList').then((result) => setItems(result.items.sort(function (a: item, b: item) {
+        request('getItemList').then((result) => context.setItems(result.items.sort(function (a: item, b: item) {
             return a.sequence - b.sequence
         }))).finally(() => updateIsLoading(false));
 
         return () => {
             setIsOnItemList(false)
         }
-    }, [setIsOnItemList, setItems])
+    }, [setIsOnItemList])
 
     return (
         <>
@@ -90,7 +89,7 @@ export default function ItemList({items, setItems, setIsOnItemList}: propsInterf
             </Snackbar>
             {isLoading ? <LoadingList/> :
                 <div style={{paddingBottom: '56px'}}>
-                    <DragDropList items={items} setItems={setItems} openEditDialog={openEditDialog}/>
+                    <DragDropList openEditDialog={openEditDialog}/>
                 </div>
             }
             <AddItemModal addItemFunction={addItem} useHideOnScroll={false}/>

@@ -2,18 +2,18 @@ import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import List from "@material-ui/core/List";
 import item, {status} from "../interfaces/item";
 import {Divider, Typography} from "@material-ui/core";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import SwipableItem from "./SwipeableItem";
 import request from "./lib/request";
+import { ShoppingListContext, ShoppingListContextType } from "../contexts/ShoppingListContext";
 
 interface props {
-    items: item[],
-    setItems: (newValue: item[]) => void,
     openEditDialog: (item: item) => void,
 }
 
 export default function DragDropList(props: props) {
     const [isDisabled, updateIsDisabled] = useState(false);
+    const context = useContext(ShoppingListContext) as ShoppingListContextType;
 
     function handleOnDragStart() {
         updateIsDisabled(true);
@@ -21,14 +21,16 @@ export default function DragDropList(props: props) {
 
     function handleOnDragEnd(result: any) {
         updateIsDisabled(false);
-        if (!result.destination) return;
+        if (!result.destination || result.destination.index === result.source.index) return;
 
-        const [reorderedItem] = props.items.splice(result.source.index, 1);
-        props.items.splice(result.destination.index, 0, reorderedItem);
+        const itemsCopy = context.items.slice();
 
-        props.setItems(props.items);
+        const [reorderedItem] = itemsCopy.splice(result.source.index, 1);
+        itemsCopy.splice(result.destination.index, 0, reorderedItem);
 
-        let sequenceItems = props.items.map(item => ({id: item.id, sequence: props.items.indexOf(item)}))
+        context.setItems(itemsCopy);
+
+        let sequenceItems = itemsCopy.map(item => ({id: item.id, sequence: itemsCopy.indexOf(item)}))
 
         request('updateSequence', {
             items: sequenceItems
@@ -36,25 +38,25 @@ export default function DragDropList(props: props) {
     }
 
     const deleteItem = (id: number): void => {
-        if (!props.items) return;
-        const itemsArray = props.items.slice();
+        if (!context.items) return;
+        const itemsArray = context.items.slice();
         const item = itemsArray.find(element => element.id === id);
         if (!item) return;
-        if (item) itemsArray.splice(props.items.indexOf(item), 1);
-        props.setItems(itemsArray);
+        if (item) itemsArray.splice(context.items.indexOf(item), 1);
+        context.setItems(itemsArray);
         request('deleteItem', {
             id: item.id
         });
     }
 
     const markItem = (id: number, setDone: boolean): void => {
-        if (!props.items) return;
-        const itemsArray = props.items.slice();
+        if (!context.items) return;
+        const itemsArray = context.items.slice();
         const item = itemsArray.find(element => element.id === id);
         if (!item) return;
         if ((setDone && item.status === status.closed) || (!setDone && item.status === status.open)) return;
         setDone ? item.status = status.closed : item.status = status.open;
-        props.setItems(itemsArray);
+        context.setItems(itemsArray);
         setDone ?
             request('updateItemStatus', {
                 id: item.id, status: status.closed
@@ -69,7 +71,7 @@ export default function DragDropList(props: props) {
             <Droppable droppableId={"DroppableShoppingList"}>
                 {(provided) => (
                     <List {...provided.droppableProps} ref={provided.innerRef}>
-                        {props.items ? props.items.map((item, index) => (
+                        {context.items ? context.items.map((item, index) => (
                             <Draggable key={item.id} draggableId={'draggableId-' + item.id}
                                        index={index}>
                                 {(provided) => (
@@ -84,7 +86,7 @@ export default function DragDropList(props: props) {
                                 )}
                             </Draggable>
                         )) : "An error has occured"}
-                        {props.items?.length === 0 ?
+                        {context.items?.length === 0 ?
                             <div style={{display: "flex", justifyContent: "center", marginTop: "10px"}}>
                                 <Typography variant={"h5"}>Your shopping list is
                                     empty!</Typography>
