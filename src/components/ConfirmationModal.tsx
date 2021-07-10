@@ -4,34 +4,30 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import React from "react";
 
-interface props {
-    isOpen: boolean,
-    callback: (itemId: number) => void,
-    setIsOpen: (newValue: boolean) => void,
-    id: number,
+interface ConfirmationModelProps {
+    isOpen: boolean;
+    callback: (itemId: number) => void;
+    setIsOpen: (newValue: boolean) => void;
+    id: number;
 }
 
-export default function ConfirmationModal(props: props) {
-    const handleSubmit = () => {
-        handleDialogClose();
-        props.callback(props.id);
-    };
-
-    const handleDialogClose = () => {
-        props.setIsOpen(false);
+export default function ConfirmationModal({ isOpen, callback, setIsOpen, id }: ConfirmationModelProps) {
+    const handleSubmit = (): void => {
+        setIsOpen(false);
+        callback(id);
     };
 
     return (
-        <Dialog open={props.isOpen} onClose={handleDialogClose} aria-labelledby="form-dialog-title">
+        <Dialog open={isOpen} onClose={() => setIsOpen(false)} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Delete item?</DialogTitle>
             <DialogActions>
-                <Button onClick={handleDialogClose} color="primary">
+                <Button onClick={() => setIsOpen(false)} color="secondary">
                     Cancel
                 </Button>
-                <Button onClick={handleSubmit} color="primary">
+                <Button onClick={handleSubmit} color="secondary">
                     Delete
                 </Button>
             </DialogActions>
         </Dialog>
-    )
+    );
 }

@@ -1,3 +1,3 @@
-export interface SSEvent extends Event{
+export interface SSEvent extends Event {
     data?: string;
 }

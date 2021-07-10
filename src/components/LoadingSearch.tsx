@@ -1,28 +1,46 @@
-import {Skeleton} from "@material-ui/lab";
-import {Card, CardContent, Typography} from "@material-ui/core";
+import { Skeleton } from "@material-ui/lab";
+import { Card, CardContent, Typography } from "@material-ui/core";
 import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles(() => ({
+    card: {
+        margin: 5,
+        width: 250,
+    },
+    cardContent: {
+        display: "flex",
+        flexDirection: "column",
+    },
+    skeleton: {
+        alignSelf: "center",
+    },
+    typography: {
+        display: "flex",
+        flexDirection: "row",
+        width: "100%",
+        justifyContent: "space-between",
+    },
+}));
 
 export default function LoadingSearch() {
+    const classes = useStyles();
+
     return (
-        <Card style={{margin: "5px", width: '250px'}}>
-            <CardContent style={{display: "flex", flexDirection: "column"}}>
-                <Skeleton variant={"rect"} style={{alignSelf: "center"}} width={'200px'} height={'200px'}/>
-                <Typography variant={'h6'}>
-                    <Skeleton/>
+        <Card className={classes.card}>
+            <CardContent className={classes.cardContent}>
+                <Skeleton variant={"rect"} className={classes.skeleton} width={"200px"} height={"200px"} />
+                <Typography variant={"h6"}>
+                    <Skeleton />
                 </Typography>
-                <Typography style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    width: "100%",
-                    justifyContent: "space-between"
-                }}>
+                <Typography className={classes.typography}>
                     <Typography>
-                        <Skeleton width={'20px'}/>
-                        <Skeleton width={'30px'}/>
+                        <Skeleton width={"20px"} />
+                        <Skeleton width={"30px"} />
                     </Typography>
-                    <Skeleton width={'20px'}/>
+                    <Skeleton width={"20px"} />
                 </Typography>
             </CardContent>
         </Card>
-    )
+    );
 }

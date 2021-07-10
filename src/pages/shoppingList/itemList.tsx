@@ -1,100 +1,135 @@
-import {Snackbar} from "@material-ui/core";
-import {Alert} from "@material-ui/lab";
+import { Snackbar } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import LoadingList from "../../components/LoadingList";
-import item, {unsubmittedItem} from "../../interfaces/item";
+import { Item, unsubmittedItem } from "../../interfaces/item";
 import AddItemModal from "../../components/AddItemModal";
 import EditItemModal from "../../components/EditItemModal";
-import React, {useCallback, useContext, useEffect, useState} from "react";
-import DragDropList from "../../components/dragDropList";
-import request from "../../components/lib/request";
-import {ShoppingListContext} from "../../contexts/ShoppingListContext";
+import React, { useContext, useEffect, useState } from "react";
+import DragDropList from "../../components/DragDropList";
+import useRequest from "../../hooks/useRequest";
+import { ShoppingListContext } from "../../contexts/ShoppingListContext";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
 
-interface propsInterface {
+interface ItemListProps {
     setIsOnItemList: (newValue: boolean) => void;
 }
 
-export default function ItemList({setIsOnItemList}: propsInterface) {
+const useStyles = makeStyles(() =>
+    createStyles({
+        paddingBottom: {
+            paddingBottom: 56,
+        },
+    })
+);
+
+export default function ItemList({ setIsOnItemList }: ItemListProps) {
+    const classes = useStyles();
     const [isLoading, updateIsLoading] = useState(true);
     const [isEditDialogOpen, updateIsEditDialogOpen] = useState(false);
     const [SnackbarOpen, setSnackbarOpen] = useState(false);
-    const [editingItem, updateEditingItem] = useState({id: 0, name: "", quantity: "", url: "", status: 0} as item);
-    const context = useContext(ShoppingListContext);
+    const [editingItem, updateEditingItem] = useState({
+        id: 0,
+        name: "",
+        quantity: "",
+        url: "",
+        status: 0,
+    } as Item);
+    const { setItems } = useContext(ShoppingListContext);
+    const [request] = useRequest();
 
-    const addItem = useCallback((item: unsubmittedItem): boolean => {
+    const addItem = (item: unsubmittedItem): boolean => {
         if (!window.navigator.onLine) {
             setSnackbarOpen(true);
             return false;
         }
-        request('addItem', {
-            item: {name: item.name, quantity: item.quantity, url: item.url}
-        })
-            .catch(() => setSnackbarOpen(true));
-
+        request({
+            path: "addItem",
+            data: {
+                item: {
+                    name: item.name,
+                    quantity: item.quantity,
+                    url: item.url,
+                },
+            },
+        }).catch(() => setSnackbarOpen(true));
         return true;
-    }, [context, setSnackbarOpen]);
+    };
 
-    const editItem = useCallback( (item: item): boolean => {
+    const editItem = (item: Item): boolean => {
         if (!window.navigator.onLine) {
             setSnackbarOpen(true);
             return false;
         }
-        request('updateItem', {
-            item: {
-                id: item.id,
-                name: item.name,
-                quantity: item.quantity,
-                url: item.url,
-                status: item.status
-            }
+        request({
+            path: "updateItem",
+            data: {
+                item: {
+                    id: item.id,
+                    name: item.name,
+                    quantity: item.quantity,
+                    url: item.url,
+                    status: item.status,
+                },
+            },
         }).catch(() => {
             setSnackbarOpen(true);
             return false;
         });
-
         return true;
-    }, [setSnackbarOpen]);
+    };
 
-    const openEditDialog = (item: item) => {
+    const openEditDialog = (item: Item) => {
         if (item.status === 1) return;
         updateIsEditDialogOpen(true);
         updateEditingItem(item);
-    }
+    };
 
     const handleSnackbarClose = (event?: React.SyntheticEvent, reason?: string) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
+        if (reason === "clickaway") return;
         setSnackbarOpen(false);
     };
 
     useEffect(() => {
         setIsOnItemList(true);
-        request('getItemList').then((result) => context.setItems(result.items.sort(function (a: item, b: item) {
-            return a.sequence - b.sequence
-        }))).finally(() => updateIsLoading(false));
+        request({ path: "getItemList" })
+            .then((result) =>
+                setItems(
+                    result.items.sort(function (a: Item, b: Item) {
+                        return a.sequence - b.sequence;
+                    })
+                )
+            )
+            .finally(() => updateIsLoading(false))
+            .catch((e) => {
+                console.error(e);
+            });
 
         return () => {
-            setIsOnItemList(false)
-        }
-    }, [setIsOnItemList])
+            setIsOnItemList(false);
+        };
+    }, []);
 
     return (
-        <>
-            <Snackbar open={SnackbarOpen} autoHideDuration={6000} anchorOrigin={{vertical: "top", horizontal: "center"}}
-                      onClose={handleSnackbarClose}>
+        <div>
+            <Snackbar
+                open={SnackbarOpen}
+                autoHideDuration={6000}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                onClose={handleSnackbarClose}
+            >
                 <Alert onClose={handleSnackbarClose} variant={"filled"} severity="warning">
                     Something went wrong sending the item to the server.
                 </Alert>
             </Snackbar>
-            {isLoading ? <LoadingList/> :
-                <div style={{paddingBottom: '56px'}}>
-                    <DragDropList openEditDialog={openEditDialog}/>
+            {isLoading ? (
+                <LoadingList />
+            ) : (
+                <div className={classes.paddingBottom}>
+                    <DragDropList openEditDialog={openEditDialog} />
                 </div>
-            }
-            <AddItemModal addItemFunction={addItem} useHideOnScroll={false}/>
-            <EditItemModal editItemFunction={editItem} open={isEditDialogOpen} setOpen={updateIsEditDialogOpen}
-                           item={editingItem}/>
-        </>
-    )
+            )}
+            <AddItemModal addItemFunction={addItem} useHideOnScroll={false} />
+            <EditItemModal editItemFunction={editItem} open={isEditDialogOpen} setOpen={updateIsEditDialogOpen} item={editingItem} />
+        </div>
+    );
 }

@@ -1,4 +1,4 @@
-import React, {FC, MouseEventHandler, ReactElement, useRef, useState} from 'react';
+import React, { FC, MouseEventHandler, ReactElement, useRef, useState } from "react";
 import {
     ListItem,
     ListItemAvatar,
@@ -11,8 +11,8 @@ import {
     ListItemText,
     ListItemTextProps as ListItemTextPropsTypes,
     makeStyles,
-} from '@material-ui/core';
-import {Theme} from "@material-ui/core/styles";
+} from "@material-ui/core";
+import { Theme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme: Theme) => ({
     backgroundClass: {
@@ -73,26 +73,26 @@ interface SwipeableListItemProps {
 }
 
 const SwipeableListItem: FC<SwipeableListItemProps> = ({
-                                                           avatar,
-                                                           background,
-                                                           disableDeleteAnimation = false,
-                                                           itemIcon,
-                                                           ListItemAvatarProps = {},
-                                                           ListItemIconProps = {},
-                                                           ListItemProps = {},
-                                                           ListItemSecondaryActionProps = {},
-                                                           ListItemTextProps = {},
-                                                           onSwipedLeft,
-                                                           onSwipedRight,
-                                                           primaryText,
-                                                           secondaryAction,
-                                                           secondaryText,
-                                                           threshold = 0.3,
-                                                           onClickEventHandler,
-                                                           disabled,
-                                                       }) => {
+    avatar,
+    background,
+    disableDeleteAnimation = false,
+    itemIcon,
+    ListItemAvatarProps = {},
+    ListItemIconProps = {},
+    ListItemProps = {},
+    ListItemSecondaryActionProps = {},
+    ListItemTextProps = {},
+    onSwipedLeft,
+    onSwipedRight,
+    primaryText,
+    secondaryAction,
+    secondaryText,
+    threshold = 0.3,
+    onClickEventHandler,
+    disabled,
+}) => {
     const classes = useStyles();
-    const {backgroundClass, listItemClass, wrapperClass} = classes;
+    const { backgroundClass, listItemClass, wrapperClass } = classes;
     const listElementEl = useRef<HTMLLIElement>(document.createElement(`li`));
     const [state, setState] = useState({
         wrapperMaxHeight: 1000,
@@ -104,14 +104,14 @@ const SwipeableListItem: FC<SwipeableListItemProps> = ({
         startTime: 0,
     });
 
-    const {className, ...restOfListItemProps} = ListItemProps;
+    const { className, ...restOfListItemProps } = ListItemProps;
 
-    const {diff, dragged, dragStartX, isAnimating, side, wrapperMaxHeight} = state;
+    const { diff, dragged, dragStartX, isAnimating, side, wrapperMaxHeight } = state;
 
     function onDragStartTouch(event: React.TouchEvent): void {
         if (disabled) return;
         const touch = event.touches[0];
-        const {clientX} = touch;
+        const { clientX } = touch;
         setState((prevState) => ({
             ...prevState,
             dragged: true,
@@ -140,7 +140,7 @@ const SwipeableListItem: FC<SwipeableListItemProps> = ({
                     diff: listElementEl.current.offsetWidth * 2,
                 }));
             } else {
-                setState((prevState) => ({...prevState, diff: 0}));
+                setState((prevState) => ({ ...prevState, diff: 0 }));
             }
         }
     }
@@ -167,7 +167,7 @@ const SwipeableListItem: FC<SwipeableListItemProps> = ({
     function onTransitionEnd(event: React.TransitionEvent): void {
         if (disabled) return;
         event.persist();
-        const {propertyName} = event;
+        const { propertyName } = event;
         const propertyCheck = disableDeleteAnimation || propertyName === `max-height`;
         if (side === `left` && propertyCheck && !dragged && diff < listElementEl.current.offsetWidth * threshold * -1) {
             onSwipedLeft(event);
@@ -192,7 +192,7 @@ const SwipeableListItem: FC<SwipeableListItemProps> = ({
         }
     }
 
-    const {actionIconLeft, actionIconRight, backgroundColorLeft, backgroundColorRight} = background;
+    const { actionIconLeft, actionIconRight, backgroundColorLeft, backgroundColorRight } = background;
 
     const getOpacity = (): number => {
         const opacity = parseFloat((Math.abs(diff) / 100).toFixed(2));
@@ -203,7 +203,7 @@ const SwipeableListItem: FC<SwipeableListItemProps> = ({
     };
 
     return (
-        <>
+        <div>
             <div
                 className={wrapperClass}
                 data-testid="wrapper-list-item"
@@ -272,7 +272,7 @@ const SwipeableListItem: FC<SwipeableListItemProps> = ({
                     )}
                 </ListItem>
             </div>
-        </>
+        </div>
     );
 };
 

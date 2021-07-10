@@ -1,119 +1,137 @@
-import React, {useEffect, useState} from "react";
-import item, {unsubmittedItem} from "../../interfaces/item";
+import React, { useEffect, useState } from "react";
+import { Item, unsubmittedItem } from "../../interfaces/item";
 import List from "@material-ui/core/List";
-import {
-    Divider,
-    IconButton,
-    ListItem,
-    ListItemIcon,
-    ListItemSecondaryAction,
-    ListItemText,
-    Typography
-} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import LinkIcon from "@material-ui/icons/Link";
+import { Divider, Typography } from "@material-ui/core";
 import AddItemModal from "../../components/AddItemModal";
-import DeleteIcon from "@material-ui/icons/Delete";
 import LoadingList from "../../components/LoadingList";
-import CheckIcon from "@material-ui/icons/Check";
 import ConfirmationModal from "../../components/ConfirmationModal";
-import request from "../../components/lib/request";
+import useRequest from "../../hooks/useRequest";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { DefaultListItem } from "../../components/DefaultListItem";
+
+const useStyles = makeStyles(() =>
+    createStyles({
+        list: {
+            paddingBottom: 56,
+        },
+        typographyDiv: {
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "10px",
+        },
+    })
+);
 
 export default function DefaultItemList() {
-    const [items, setItems] = useState<item[]>([]);
+    const classes = useStyles();
+    const [items, setItems] = useState<Item[]>([]);
     const [isLoading, updateIsLoading] = useState(true);
     const [confirmationModalIsOpen, setIsOpen] = useState(false);
     const [itemId, setItemId] = useState(0);
+    const [request] = useRequest();
 
     const addItem = (item: unsubmittedItem): boolean => {
         if (!window.navigator.onLine) {
             return false;
         }
-        request('addStandardItem', {
-            item: {name: item.name, quantity: item.quantity, url: item.url}
+        request({
+            path: "addStandardItem",
+            data: {
+                item: {
+                    name: item.name,
+                    quantity: item.quantity,
+                    url: item.url,
+                },
+            },
         })
-            .then(result => setItems(items.concat(result.item)))
-            .catch(() => {
+            .then((result) => setItems(items.concat(result.item)))
+            .catch((error) => {
+                console.error(error);
                 return false;
             });
 
         return true;
-    }
+    };
 
-    const addItemToItemList = (item: item) => {
-        request('addItem', {
-            item: {name: item.name, quantity: item.quantity, url: item.url}
+    const addItemToItemList = (item: Item) => {
+        request({
+            path: "addItem",
+            data: {
+                item: {
+                    name: item.name,
+                    quantity: item.quantity,
+                    url: item.url,
+                },
+            },
         }).then(() => {
             const itemsArray = items.slice();
-            const element = itemsArray.find(element => element.id === item.id);
+            const element = itemsArray.find((element) => element.id === item.id);
             if (!element) return;
             element.checked = true;
             setItems(itemsArray);
         });
-    }
+    };
 
     const openDeleteConfirmation = (id: number) => {
         setItemId(id);
         setIsOpen(true);
-    }
+    };
 
     const deleteItem = (id: number): void => {
         if (!items) return;
         const itemsArray = items.slice();
-        const item = itemsArray.find(element => element.id === id);
+        const item = itemsArray.find((element) => element.id === id);
         if (!item) return;
         if (item) itemsArray.splice(items.indexOf(item), 1);
         setItems(itemsArray);
-        request('deleteStandardItem', {
-            id: item.id
+        request({
+            path: "deleteStandardItem",
+            data: {
+                id: item.id,
+            },
         });
-    }
+    };
 
     useEffect(() => {
-        request('getStandardItems').then((result) => setItems(result.items.sort(function (a: item, b: item) {
-            return a.sequence - b.sequence
-        }))).finally(() => updateIsLoading(false));
-    }, [setItems])
+        request({ path: "getStandardItems" })
+            .then((result) =>
+                setItems(
+                    result.items.sort(function (a: Item, b: Item) {
+                        return a.sequence - b.sequence;
+                    })
+                )
+            )
+            .finally(() => updateIsLoading(false));
+    }, []);
 
     return (
-        <>
-            {isLoading ? <LoadingList/> :
-                <>
-                    <List style={{paddingBottom: '56px'}}>
-                        {items && items.length > 0 ? items.map((item: item) => (
-                            <div key={"standard_" + item.id}>
-                                <ListItem>
-                                    <ListItemIcon>
-                                        <IconButton onClick={() => {
-                                            openDeleteConfirmation(item.id)
-                                        }}>
-                                            <DeleteIcon/>
-                                        </IconButton>
-                                    </ListItemIcon>
-                                    <ListItemText primary={item.name} secondary={item.quantity}
-                                                  style={{wordBreak: "break-word"}}/>
-                                    <ListItemSecondaryAction>
-                                        {item.url ?
-                                            <IconButton aria-label="link to product on ah.nl"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            window.open(item.url)
-                                                        }}><LinkIcon/></IconButton> : null}
-                                        <IconButton onClick={() => addItemToItemList(item)}>
-                                            {item.checked ? <CheckIcon/> : <AddIcon/>}
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                                <Divider/>
+        <div>
+            {isLoading ? (
+                <LoadingList />
+            ) : (
+                <div>
+                    <List className={classes.list}>
+                        {items.length > 0 ? (
+                            items.map((item: Item) => (
+                                <div key={"standard_" + item.id}>
+                                    <DefaultListItem
+                                        openDeleteConfirmation={openDeleteConfirmation}
+                                        addItemToItemList={addItemToItemList}
+                                        item={item}
+                                    />
+                                    <Divider />
+                                </div>
+                            ))
+                        ) : (
+                            <div className={classes.typographyDiv}>
+                                <Typography variant={"h5"}>No standard items yet</Typography>
                             </div>
-                        )) : <div style={{display: "flex", justifyContent: "center", marginTop: "10px"}}><Typography
-                            variant={"h5"}>No standard items yet</Typography>
-                        </div>}
+                        )}
                     </List>
-                    <AddItemModal addItemFunction={addItem} useHideOnScroll={true}/>
-                    <ConfirmationModal isOpen={confirmationModalIsOpen} callback={deleteItem} setIsOpen={setIsOpen} id={itemId}/>
-                </>
-            }
-        </>
-    )
+                    <AddItemModal addItemFunction={addItem} useHideOnScroll={true} />
+                    <ConfirmationModal isOpen={confirmationModalIsOpen} callback={deleteItem} setIsOpen={setIsOpen} id={itemId} />
+                </div>
+            )}
+        </div>
+    );
 }
