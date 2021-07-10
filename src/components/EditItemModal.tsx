@@ -38,10 +38,10 @@ export default function EditItemModal({ editItemFunction, open, setOpen, item }:
     };
 
     useEffect(() => {
-        setName(item.name);
-        setQuantity(item.quantity);
-        setLink(item.url);
-    }, []);
+        setName(`${item.name}`);
+        setQuantity(`${item.quantity}`);
+        setLink(`${item.url}`);
+    });
 
     return (
         <div>

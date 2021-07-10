@@ -29,8 +29,20 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
+const useStylesForBottomNav = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            "&$selected": {
+                color: theme.palette.secondary.main,
+            },
+        },
+        selected: {},
+    })
+);
+
 export function ShoppingList({ setIsOnItemList }: ShoppingListProps) {
     const classes = useStyles();
+    const styleForBottomNav = useStylesForBottomNav();
     const [bottomNavValue, setBottomNavValue] = React.useState(1);
     const { setTitle } = useContext(NavbarContext);
 
@@ -48,9 +60,9 @@ export function ShoppingList({ setIsOnItemList }: ShoppingListProps) {
                 showLabels
                 className={classes.bottomNavigation}
             >
-                <BottomNavigationAction label="Standard" icon={<PostAddIcon />} classes={classes} />
-                <BottomNavigationAction label="List" icon={<ListIcon />} classes={classes} />
-                <BottomNavigationAction label="Search" icon={<SearchIcon />} classes={classes} />
+                <BottomNavigationAction label="Standard" icon={<PostAddIcon />} classes={styleForBottomNav} />
+                <BottomNavigationAction label="List" icon={<ListIcon />} classes={styleForBottomNav} />
+                <BottomNavigationAction label="Search" icon={<SearchIcon />} classes={styleForBottomNav} />
             </BottomNavigation>
         </div>
     );

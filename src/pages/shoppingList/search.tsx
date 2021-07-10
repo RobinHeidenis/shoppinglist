@@ -82,7 +82,7 @@ export default function Search() {
         request({
             path: "addItem",
             data: {
-                item: { name: `${item.name} ${item.amount}`, url: item.link },
+                item: { name: `${item.name} ${item.amount}`, quantity: "", url: item.link },
             },
         });
         const itemsArray = items.slice();

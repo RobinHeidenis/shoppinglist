@@ -33,13 +33,13 @@ export default function LoadingSearch() {
                 <Typography variant={"h6"}>
                     <Skeleton />
                 </Typography>
-                <Typography className={classes.typography}>
-                    <Typography>
+                <div className={classes.typography}>
+                    <div>
                         <Skeleton width={"20px"} />
                         <Skeleton width={"30px"} />
-                    </Typography>
+                    </div>
                     <Skeleton width={"20px"} />
-                </Typography>
+                </div>
             </CardContent>
         </Card>
     );
