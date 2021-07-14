@@ -6,6 +6,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { Item } from "../interfaces/item";
+import { usePrevious } from "../hooks/usePrevious";
 
 interface EditItemModalProps {
     editItemFunction(item: Item): boolean;
@@ -21,6 +22,7 @@ export default function EditItemModal({ editItemFunction, open, setOpen, item }:
     const [name, setName] = useState("");
     const [quantity, setQuantity] = useState("");
     const [link, setLink] = useState("");
+    const prevOpen = usePrevious(open);
 
     const handleSubmit = () => {
         setOpen(false);
@@ -37,10 +39,16 @@ export default function EditItemModal({ editItemFunction, open, setOpen, item }:
         }
     };
 
+    const setItemState = () => {
+        setName(item.name);
+        setQuantity(item.quantity);
+        setLink(item.url);
+    };
+
     useEffect(() => {
-        setName(`${item.name}`);
-        setQuantity(`${item.quantity}`);
-        setLink(`${item.url}`);
+        if (prevOpen !== open && open) {
+            setItemState();
+        }
     });
 
     return (
