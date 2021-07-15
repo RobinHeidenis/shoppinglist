@@ -9,6 +9,7 @@ import DragDropList from "../../components/DragDropList";
 import useRequest from "../../hooks/useRequest";
 import { ShoppingListContext } from "../../contexts/ShoppingListContext";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { EditContext } from "../../contexts/EditContext";
 
 interface ItemListProps {
     setIsOnItemList: (newValue: boolean) => void;
@@ -25,15 +26,8 @@ const useStyles = makeStyles(() =>
 export default function ItemList({ setIsOnItemList }: ItemListProps) {
     const classes = useStyles();
     const [isLoading, updateIsLoading] = useState(true);
-    const [isEditDialogOpen, updateIsEditDialogOpen] = useState(false);
     const [SnackbarOpen, setSnackbarOpen] = useState(false);
-    const [editingItem, updateEditingItem] = useState({
-        id: 0,
-        name: "",
-        quantity: "",
-        url: "",
-        status: 0,
-    } as Item);
+    const { setEditingItem, setIsEditDialogOpen } = useContext(EditContext);
     const { setItems } = useContext(ShoppingListContext);
     const [request] = useRequest();
 
@@ -80,8 +74,8 @@ export default function ItemList({ setIsOnItemList }: ItemListProps) {
 
     const openEditDialog = (item: Item) => {
         if (item.status === 1) return;
-        updateIsEditDialogOpen(true);
-        updateEditingItem(item);
+        setIsEditDialogOpen(true);
+        setEditingItem(item);
     };
 
     const handleSnackbarClose = (event?: React.SyntheticEvent, reason?: string) => {
@@ -129,7 +123,7 @@ export default function ItemList({ setIsOnItemList }: ItemListProps) {
                 </div>
             )}
             <AddItemModal addItemFunction={addItem} useHideOnScroll={false} />
-            <EditItemModal editItemFunction={editItem} open={isEditDialogOpen} setOpen={updateIsEditDialogOpen} item={editingItem} />
+            <EditItemModal editItemFunction={editItem} />
         </div>
     );
 }

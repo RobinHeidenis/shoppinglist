@@ -1,11 +1,14 @@
 import SearchBar from "material-ui-search-bar";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Card, CardContent, IconButton, Typography } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import CheckIcon from "@material-ui/icons/Check";
 import LoadingSearch from "../../components/LoadingSearch";
 import useRequest from "../../hooks/useRequest";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { SearchContext } from "../../contexts/SearchContext";
+import { EditContext } from "../../contexts/EditContext";
+import { BottomNavContext } from "../../contexts/BottomNavContext";
 
 interface searchResultItem {
     name: string;
@@ -59,10 +62,12 @@ const useStyles = makeStyles(() =>
 
 export default function Search() {
     const classes = useStyles();
-    const [searchValue, setSearchValue] = useState("");
     const [items, setItems] = useState([] as searchResultItem[]);
     const [isLoading, setIsLoading] = useState(false);
     const [request] = useRequest();
+    const { searchValue, setSearchValue } = useContext(SearchContext);
+    const { isEditing, setEditingItem, editingItem, setIsEditDialogOpen } = useContext(EditContext);
+    const { setBottomNavValue } = useContext(BottomNavContext);
 
     function search(query: string, setItems: any) {
         setIsLoading(true);
@@ -79,6 +84,20 @@ export default function Search() {
     }
 
     function handleClick(item: searchResultItem) {
+        if (isEditing) {
+            setEditingItem({
+                id: editingItem.id,
+                name: `${item.name} ${item.amount}`,
+                quantity: "",
+                url: item.link,
+                checked: editingItem.checked,
+                status: editingItem.status,
+                sequence: editingItem.sequence,
+            });
+            setIsEditDialogOpen(true);
+            setBottomNavValue(1);
+            return;
+        }
         request({
             path: "addItem",
             data: {
@@ -91,6 +110,10 @@ export default function Search() {
         element.checked = true;
         setItems(itemsArray);
     }
+
+    useEffect(() => {
+        if (searchValue) search(searchValue, setItems);
+    }, []);
 
     return (
         <div>

@@ -9,6 +9,7 @@ import AddIcon from "@material-ui/icons/Add";
 import { Fab, useScrollTrigger, Zoom } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { unsubmittedItem } from "../interfaces/item";
+import { SearchTextField } from "./SearchTextField";
 
 interface AddItemModalProps {
     addItemFunction(item: unsubmittedItem): boolean;
@@ -79,7 +80,7 @@ export default function AddItemModal({ addItemFunction, useHideOnScroll }: AddIt
             <Dialog open={dialogOpen} onClose={handleDialogClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Add item</DialogTitle>
                 <DialogContent>
-                    <TextField value={name} setValue={setName} maxLength={255} name={"Name"} />
+                    <SearchTextField value={name} setValue={setName} maxLength={255} name={"Name"} />
                     <TextField value={quantity} setValue={setQuantity} maxLength={15} name={"Quantity"} />
                     <TextField value={link} setValue={setLink} maxLength={500} name={"URL"} />
                 </DialogContent>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
 import { TextField } from "./TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -7,32 +7,29 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { Item } from "../interfaces/item";
 import { usePrevious } from "../hooks/usePrevious";
+import { SearchTextField } from "./SearchTextField";
+import { EditContext } from "../contexts/EditContext";
 
 interface EditItemModalProps {
     editItemFunction(item: Item): boolean;
-
-    open: boolean;
-
-    setOpen(open: boolean): any;
-
-    item: Item;
 }
 
-export default function EditItemModal({ editItemFunction, open, setOpen, item }: EditItemModalProps) {
+export default function EditItemModal({ editItemFunction }: EditItemModalProps) {
     const [name, setName] = useState("");
     const [quantity, setQuantity] = useState("");
     const [link, setLink] = useState("");
-    const prevOpen = usePrevious(open);
+    const { editingItem, isEditDialogOpen, setIsEditDialogOpen } = useContext(EditContext);
+    const prevOpen = usePrevious(isEditDialogOpen);
 
     const handleSubmit = () => {
-        setOpen(false);
+        setIsEditDialogOpen(false);
         if (!name) return;
 
-        item.name = name;
-        item.quantity = quantity;
-        item.url = link;
+        editingItem.name = name;
+        editingItem.quantity = quantity;
+        editingItem.url = link;
 
-        if (editItemFunction(item)) {
+        if (editItemFunction(editingItem)) {
             setName("");
             setQuantity("");
             setLink("");
@@ -40,28 +37,28 @@ export default function EditItemModal({ editItemFunction, open, setOpen, item }:
     };
 
     const setItemState = () => {
-        setName(item.name);
-        setQuantity(item.quantity);
-        setLink(item.url);
+        setName(editingItem.name);
+        setQuantity(editingItem.quantity);
+        setLink(editingItem.url);
     };
 
     useEffect(() => {
-        if (prevOpen !== open && open) {
+        if (prevOpen !== isEditDialogOpen && isEditDialogOpen) {
             setItemState();
         }
     });
 
     return (
         <div>
-            <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="edit-dialog-title">
+            <Dialog open={isEditDialogOpen} onClose={() => setIsEditDialogOpen(false)} aria-labelledby="edit-dialog-title">
                 <DialogTitle id="edit-dialog-title">Edit item</DialogTitle>
                 <DialogContent>
-                    <TextField value={name} setValue={setName} maxLength={255} name={"Name"} />
+                    <SearchTextField value={name} setValue={setName} maxLength={255} name={"Name"} fromEditing />
                     <TextField value={quantity} setValue={setQuantity} maxLength={15} name={"Quantity"} />
                     <TextField value={link} setValue={setLink} maxLength={500} name={"URL"} />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)} color="secondary">
+                    <Button onClick={() => setIsEditDialogOpen(false)} color="secondary">
                         Cancel
                     </Button>
                     <Button onClick={handleSubmit} color="secondary">

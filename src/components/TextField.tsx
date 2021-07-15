@@ -6,9 +6,10 @@ interface TextFieldProps {
     setValue: (newValue: string) => void;
     maxLength: number;
     name: string;
+    autofocus?: boolean;
 }
 
-export function TextField({ value, setValue, maxLength, name }: TextFieldProps) {
+export function TextField({ value, setValue, maxLength, name, autofocus }: TextFieldProps) {
     return (
         <MUITextField
             margin="dense"
@@ -21,6 +22,7 @@ export function TextField({ value, setValue, maxLength, name }: TextFieldProps) 
             fullWidth
             autoComplete="off"
             color={"secondary"}
+            autoFocus={autofocus}
         />
     );
 }
