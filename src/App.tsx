@@ -19,7 +19,7 @@ function App(): JSX.Element {
     const [hasBackButton, setHasBackButton] = useState(false);
     const [title, setTitle] = useState("");
 
-    useEffect(() => {
+    const setupEventSource = () => {
         if (!process.env.REACT_APP_EVENTS_URL) throw new Error("EVENTS_URL environment variable has not been set.");
         const es = new EventSource(process.env.REACT_APP_EVENTS_URL);
 
@@ -64,6 +64,14 @@ function App(): JSX.Element {
         es.addEventListener("deleteAllItems", () => {
             setItems([]);
         });
+
+        return es;
+    };
+
+    useEffect(() => {
+        let es = setupEventSource();
+
+        es.onerror = () => (es = setupEventSource());
 
         return () => {
             if (es.readyState && es.readyState === 1) es.close();
