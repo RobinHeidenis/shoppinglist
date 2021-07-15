@@ -132,7 +132,7 @@ export default function Search() {
                     items.map((item) => (
                         <Card className={classes.Card} key={item.id}>
                             <CardContent className={classes.CardContent}>
-                                <img src={item.img} alt="" width={"auto"} className={classes.AlignSelfCenter} />
+                                <img src={item.img} alt="" width={"auto"} className={classes.AlignSelfCenter} loading={"lazy"} />
                                 <Typography variant={"h6"}>{item.name}</Typography>
                                 <div className={classes.CardContentInnerDiv}>
                                     <div>
