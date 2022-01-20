@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { NavbarContext } from "../../contexts/NavbarContext";
-import { Changelog } from "../../components/Changelog";
-import { ThemeSettings } from "../../components/ThemeSettings";
+import { Changelog } from "./components/Changelog";
+import { ThemeSettings } from "./components/ThemeSettings";
 
 export default function Settings() {
     const { setTitle } = useContext(NavbarContext);

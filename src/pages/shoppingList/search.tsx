@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { Card, CardContent, IconButton, Typography } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import CheckIcon from "@material-ui/icons/Check";
-import LoadingSearch from "../../components/LoadingSearch";
+import LoadingSearch from "./components/LoadingSearch";
 import useRequest from "../../hooks/useRequest";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { SearchContext } from "../../contexts/SearchContext";

@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
-import { TextField } from "./TextField";
+import { TextField } from "../../../components/ui/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { Item } from "../interfaces/item";
-import { usePrevious } from "../hooks/usePrevious";
+import { Item } from "../../../interfaces/item";
+import { usePrevious } from "../../../hooks/usePrevious";
 import { SearchTextField } from "./SearchTextField";
-import { EditContext } from "../contexts/EditContext";
+import { EditContext } from "../../../contexts/EditContext";
 
 interface EditItemModalProps {
     editItemFunction(item: Item): boolean;

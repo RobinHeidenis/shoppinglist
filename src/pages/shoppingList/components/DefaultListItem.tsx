@@ -4,7 +4,7 @@ import LinkIcon from "@material-ui/icons/Link";
 import CheckIcon from "@material-ui/icons/Check";
 import AddIcon from "@material-ui/icons/Add";
 import React from "react";
-import { Item } from "../interfaces/item";
+import { Item } from "../../../interfaces/item";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 
 interface DefaultListItemProps {

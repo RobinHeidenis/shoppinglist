@@ -6,7 +6,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListIcon from "@material-ui/icons/List";
 import SettingsIcon from "@material-ui/icons/Settings";
-import history from "./lib/history";
+import history from "../lib/history";
 
 interface SwipeableTemporaryDrawerProps {
     updateMenuState: (newValue: boolean) => void;

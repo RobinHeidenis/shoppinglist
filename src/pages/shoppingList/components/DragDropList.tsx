@@ -1,13 +1,13 @@
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import List from "@material-ui/core/List";
-import { Item, status } from "../interfaces/item";
+import { Item, status } from "../../../interfaces/item";
 import { Divider, Typography } from "@material-ui/core";
 import React, { useContext, useState } from "react";
 import SwipableItem from "./SwipeableItem";
-import useRequest from "../hooks/useRequest";
-import { ShoppingListContext } from "../contexts/ShoppingListContext";
+import useRequest from "../../../hooks/useRequest";
+import { ShoppingListContext } from "../../../contexts/ShoppingListContext";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { EmptyCartSVG } from "./svg/EmptyCartSVG";
+import { EmptyCartSVG } from "../../../components/svg/EmptyCartSVG";
 
 interface DragDropListProps {
     openEditDialog: (item: Item) => void;
