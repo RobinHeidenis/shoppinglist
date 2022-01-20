@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { Box } from "@material-ui/core";
 import { NavbarContext } from "../../contexts/NavbarContext";
-import { BonusCardSVG } from "../../components/svg/BonusCardSVG";
+import { BonusCardSVG } from "./components/BonusCardSVG";
 
 interface BonusCardProps {
     setHasBackButton: (newValue: boolean) => void;

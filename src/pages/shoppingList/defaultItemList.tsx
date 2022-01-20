@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Item, unsubmittedItem } from "../../interfaces/item";
 import List from "@material-ui/core/List";
 import { Divider, Typography } from "@material-ui/core";
-import AddItemModal from "../../components/AddItemModal";
-import LoadingList from "../../components/LoadingList";
-import ConfirmationModal from "../../components/ConfirmationModal";
+import AddItemModal from "./components/AddItemModal";
+import LoadingList from "./components/LoadingList";
+import ConfirmationModal from "./components/ConfirmationModal";
 import useRequest from "../../hooks/useRequest";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { DefaultListItem } from "../../components/DefaultListItem";
+import { DefaultListItem } from "./components/DefaultListItem";
 
 const useStyles = makeStyles(() =>
     createStyles({

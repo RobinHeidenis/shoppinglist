@@ -5,12 +5,12 @@ import SwipeableTemporaryDrawer from "./SideBar";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { MoreVert, Redeem } from "@material-ui/icons";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import useRequest from "../hooks/useRequest";
-import { ShoppingListContext } from "../contexts/ShoppingListContext";
-import history from "./lib/history";
-import { NavbarContext } from "../contexts/NavbarContext";
-import { MenuIconButtonStart } from "./MenuIconButtonStart";
-import { MenuIconButtonEnd } from "./MenuIconButtonEnd";
+import useRequest from "../../hooks/useRequest";
+import { ShoppingListContext } from "../../contexts/ShoppingListContext";
+import history from "../lib/history";
+import { NavbarContext } from "../../contexts/NavbarContext";
+import { MenuIconButtonStart } from "./components/MenuIconButtonStart";
+import { MenuIconButtonEnd } from "./components/MenuIconButtonEnd";
 
 interface NavBarProps {
     isOnItemList: boolean;

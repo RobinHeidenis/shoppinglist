@@ -1,11 +1,11 @@
 import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import LoadingList from "../../components/LoadingList";
+import LoadingList from "./components/LoadingList";
 import { Item, unsubmittedItem } from "../../interfaces/item";
-import AddItemModal from "../../components/AddItemModal";
-import EditItemModal from "../../components/EditItemModal";
+import AddItemModal from "./components/AddItemModal";
+import EditItemModal from "./components/EditItemModal";
 import React, { useContext, useEffect, useState } from "react";
-import DragDropList from "../../components/DragDropList";
+import DragDropList from "./components/DragDropList";
 import useRequest from "../../hooks/useRequest";
 import { ShoppingListContext } from "../../contexts/ShoppingListContext";
 import { createStyles, makeStyles } from "@material-ui/core/styles";

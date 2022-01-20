@@ -1,7 +1,7 @@
 import { IconButton } from "@material-ui/core";
 import React from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { MenuIconButtonProps } from "../interfaces/MenuIconButtonProps";
+import { MenuIconButtonProps } from "../../../interfaces/MenuIconButtonProps";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

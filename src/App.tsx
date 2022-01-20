@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/navbar/NavBar";
 import { Route, Router } from "react-router-dom";
 import { ShoppingList } from "./pages/shoppingList/shoppingList";
 import { Item, SequenceItem } from "./interfaces/item";

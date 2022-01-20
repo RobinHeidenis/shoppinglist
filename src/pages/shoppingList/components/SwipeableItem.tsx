@@ -1,11 +1,11 @@
-import { Item, status } from "../interfaces/item";
+import { Item, status } from "../../../interfaces/item";
 import DoneIcon from "@material-ui/icons/Done";
 import UndoIcon from "@material-ui/icons/Undo";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { IconButton } from "@material-ui/core";
 import LinkIcon from "@material-ui/icons/Link";
 import React from "react";
-import SwipeableListItem from "./lib/SwipeableListItem";
+import SwipeableListItem from "../../../components/lib/SwipeableListItem";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 
 interface SwipeableListItemProps {

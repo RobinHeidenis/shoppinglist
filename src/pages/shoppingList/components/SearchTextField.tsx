@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { FormControl, IconButton, Input, InputAdornment, InputLabel } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
-import { BottomNavContext } from "../contexts/BottomNavContext";
-import { SearchContext } from "../contexts/SearchContext";
-import { EditContext } from "../contexts/EditContext";
+import { BottomNavContext } from "../../../contexts/BottomNavContext";
+import { SearchContext } from "../../../contexts/SearchContext";
+import { EditContext } from "../../../contexts/EditContext";
 
 interface TextFieldProps {
     value: string;
