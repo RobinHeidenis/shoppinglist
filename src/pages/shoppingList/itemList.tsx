@@ -7,9 +7,11 @@ import EditItemModal from "./components/EditItemModal";
 import React, { useContext, useEffect, useState } from "react";
 import DragDropList from "./components/DragDropList";
 import useRequest from "../../hooks/useRequest";
-import { ShoppingListContext } from "../../contexts/ShoppingListContext";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { EditContext } from "../../contexts/EditContext";
+import { useAppDispatch } from "../../hooks/redux";
+import { setItems } from "../../slices/items/items.slice";
+import { useGetAllItemsQuery } from "../../slices/api/api.slice";
 
 interface ItemListProps {
     setIsOnItemList: (newValue: boolean) => void;
@@ -25,11 +27,11 @@ const useStyles = makeStyles(() =>
 
 export default function ItemList({ setIsOnItemList }: ItemListProps) {
     const classes = useStyles();
-    const [isLoading, updateIsLoading] = useState(true);
     const [SnackbarOpen, setSnackbarOpen] = useState(false);
     const { setEditingItem, setIsEditDialogOpen } = useContext(EditContext);
-    const { setItems } = useContext(ShoppingListContext);
+    const dispatch = useAppDispatch();
     const [request] = useRequest();
+    const { data, isLoading } = useGetAllItemsQuery(undefined, { refetchOnMountOrArgChange: true });
 
     const addItem = (item: unsubmittedItem): boolean => {
         if (!window.navigator.onLine) {
@@ -84,19 +86,30 @@ export default function ItemList({ setIsOnItemList }: ItemListProps) {
     };
 
     useEffect(() => {
-        setIsOnItemList(true);
-        request({ path: "getItemList" })
-            .then((result) =>
-                setItems(
-                    result.items.sort(function (a: Item, b: Item) {
-                        return a.sequence - b.sequence;
-                    })
-                )
-            )
-            .finally(() => updateIsLoading(false))
-            .catch((e) => {
-                console.error(e);
+        if (data) {
+            const items = data.sort(function (a: Item, b: Item) {
+                return a.sequence - b.sequence;
             });
+            dispatch(setItems(items));
+        }
+    }, [data]);
+
+    useEffect(() => {
+        setIsOnItemList(true);
+        // request({ path: "getItemList" })
+        //     .then((result) =>
+        //         dispatch(
+        //             setItems(
+        //                 result.items.sort(function (a: Item, b: Item) {
+        //                     return a.sequence - b.sequence;
+        //                 })
+        //             )
+        //         )
+        //     )
+        //     .finally(() => updateIsLoading(false))
+        //     .catch((e) => {
+        //         console.error(e);
+        //     });
 
         return () => {
             setIsOnItemList(false);

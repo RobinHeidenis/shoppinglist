@@ -3,12 +3,8 @@ import { Box } from "@material-ui/core";
 import { NavbarContext } from "../../contexts/NavbarContext";
 import { BonusCardSVG } from "./components/BonusCardSVG";
 
-interface BonusCardProps {
-    setHasBackButton: (newValue: boolean) => void;
-}
-
-export default function BonusCard({ setHasBackButton }: BonusCardProps) {
-    const { setTitle } = useContext(NavbarContext);
+export default function BonusCard() {
+    const { setTitle, setHasBackButton } = useContext(NavbarContext);
 
     useEffect(() => {
         setTitle("Bonuscard");

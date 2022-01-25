@@ -11,6 +11,7 @@ export interface Item {
     checked?: boolean;
     status: status;
     sequence: number;
+    categoryId?: number;
 }
 
 export interface SequenceItem {
