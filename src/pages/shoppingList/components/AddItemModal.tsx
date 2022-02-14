@@ -8,12 +8,11 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import AddIcon from "@material-ui/icons/Add";
 import { Fab, useScrollTrigger, Zoom } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { unsubmittedItem } from "../../../interfaces/item";
 import { SearchTextField } from "./SearchTextField";
+import { useAddItemMutation } from "../../../slices/api/api.slice";
+import { Item } from "../../../interfaces/item";
 
 interface AddItemModalProps {
-    addItemFunction(item: unsubmittedItem): boolean;
-
     useHideOnScroll: boolean;
 }
 
@@ -27,12 +26,13 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function AddItemModal({ addItemFunction, useHideOnScroll }: AddItemModalProps) {
+export default function AddItemModal({ useHideOnScroll }: AddItemModalProps) {
     const classes = useStyles();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [name, setName] = useState<string>(""); //using empty strings so react doesn't give uncontrolled input error.
     const [quantity, setQuantity] = useState<string>("");
     const [link, setLink] = useState<string>("");
+    const [addItem] = useAddItemMutation();
 
     function HideOnScroll() {
         const trigger = useScrollTrigger({
@@ -57,15 +57,14 @@ export default function AddItemModal({ addItemFunction, useHideOnScroll }: AddIt
     const handleSubmit = () => {
         if (!name) return;
 
-        const item = {
+        const item: Partial<Item> = {
             name,
-            quantity,
-            url: link,
         };
 
-        if (addItemFunction(item)) {
-            handleDialogClose();
-        }
+        quantity && (item.quantity = quantity);
+        link && (item.url = link);
+
+        addItem({ ...item, categoryId: 1 }).then(() => handleDialogClose());
     };
 
     return (

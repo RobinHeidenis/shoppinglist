@@ -1,17 +1,13 @@
 import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import LoadingList from "./components/LoadingList";
-import { Item, unsubmittedItem } from "../../interfaces/item";
+import { Item } from "../../interfaces/item";
 import AddItemModal from "./components/AddItemModal";
 import EditItemModal from "./components/EditItemModal";
 import React, { useContext, useEffect, useState } from "react";
 import DragDropList from "./components/DragDropList";
-import useRequest from "../../hooks/useRequest";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { EditContext } from "../../contexts/EditContext";
-import { useAppDispatch } from "../../hooks/redux";
-import { setItems } from "../../slices/items/items.slice";
-import { useGetAllItemsQuery } from "../../slices/api/api.slice";
+import { useUpdateItemMutation } from "../../slices/api/api.slice";
 
 interface ItemListProps {
     setIsOnItemList: (newValue: boolean) => void;
@@ -29,48 +25,14 @@ export default function ItemList({ setIsOnItemList }: ItemListProps) {
     const classes = useStyles();
     const [SnackbarOpen, setSnackbarOpen] = useState(false);
     const { setEditingItem, setIsEditDialogOpen } = useContext(EditContext);
-    const dispatch = useAppDispatch();
-    const [request] = useRequest();
-    const { data, isLoading } = useGetAllItemsQuery(undefined, { refetchOnMountOrArgChange: true });
-
-    const addItem = (item: unsubmittedItem): boolean => {
-        if (!window.navigator.onLine) {
-            setSnackbarOpen(true);
-            return false;
-        }
-        request({
-            path: "addItem",
-            data: {
-                item: {
-                    name: item.name,
-                    quantity: item.quantity,
-                    url: item.url,
-                },
-            },
-        }).catch(() => setSnackbarOpen(true));
-        return true;
-    };
+    const [updateItem] = useUpdateItemMutation();
 
     const editItem = (item: Item): boolean => {
         if (!window.navigator.onLine) {
             setSnackbarOpen(true);
             return false;
         }
-        request({
-            path: "updateItem",
-            data: {
-                item: {
-                    id: item.id,
-                    name: item.name,
-                    quantity: item.quantity,
-                    url: item.url,
-                    status: item.status,
-                },
-            },
-        }).catch(() => {
-            setSnackbarOpen(true);
-            return false;
-        });
+        updateItem(item);
         return true;
     };
 
@@ -86,30 +48,7 @@ export default function ItemList({ setIsOnItemList }: ItemListProps) {
     };
 
     useEffect(() => {
-        if (data) {
-            const items = data.sort(function (a: Item, b: Item) {
-                return a.sequence - b.sequence;
-            });
-            dispatch(setItems(items));
-        }
-    }, [data]);
-
-    useEffect(() => {
         setIsOnItemList(true);
-        // request({ path: "getItemList" })
-        //     .then((result) =>
-        //         dispatch(
-        //             setItems(
-        //                 result.items.sort(function (a: Item, b: Item) {
-        //                     return a.sequence - b.sequence;
-        //                 })
-        //             )
-        //         )
-        //     )
-        //     .finally(() => updateIsLoading(false))
-        //     .catch((e) => {
-        //         console.error(e);
-        //     });
 
         return () => {
             setIsOnItemList(false);
@@ -118,6 +57,7 @@ export default function ItemList({ setIsOnItemList }: ItemListProps) {
 
     return (
         <div>
+            {/*TODO: export this component to ServerErrorBar or create new system to show errors*/}
             <Snackbar
                 open={SnackbarOpen}
                 autoHideDuration={6000}
@@ -128,14 +68,10 @@ export default function ItemList({ setIsOnItemList }: ItemListProps) {
                     Something went wrong sending the item to the server.
                 </Alert>
             </Snackbar>
-            {isLoading ? (
-                <LoadingList />
-            ) : (
-                <div className={classes.paddingBottom}>
-                    <DragDropList openEditDialog={openEditDialog} />
-                </div>
-            )}
-            <AddItemModal addItemFunction={addItem} useHideOnScroll={false} />
+            <div className={classes.paddingBottom}>
+                <DragDropList openEditDialog={openEditDialog} />
+            </div>
+            <AddItemModal useHideOnScroll={false} />
             <EditItemModal editItemFunction={editItem} />
         </div>
     );

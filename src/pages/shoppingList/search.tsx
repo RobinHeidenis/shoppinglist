@@ -9,14 +9,18 @@ import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { SearchContext } from "../../contexts/SearchContext";
 import { EditContext } from "../../contexts/EditContext";
 import { BottomNavContext } from "../../contexts/BottomNavContext";
+import { skipToken } from "@reduxjs/toolkit/query";
+import { useSearchQuery } from "../../slices/api/api.slice";
 
-interface searchResultItem {
+export interface SearchResultItem {
+    id: number;
     name: string;
-    link: string;
-    img: string;
-    amount: string;
-    price: string;
-    id: string;
+    url: string;
+    imageUrl: string;
+    price: {
+        amount: number;
+        unitSize: string;
+    };
     checked: boolean;
 }
 
@@ -62,34 +66,22 @@ const useStyles = makeStyles(() =>
 
 export default function Search() {
     const classes = useStyles();
-    const [items, setItems] = useState([] as searchResultItem[]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [items, setItems] = useState([] as SearchResultItem[]);
+    const [executeQuery, setExecuteQuery] = useState(false);
     const [request] = useRequest();
     const { searchValue, setSearchValue } = useContext(SearchContext);
     const { isEditing, setEditingItem, editingItem, setIsEditDialogOpen } = useContext(EditContext);
     const { setBottomNavValue } = useContext(BottomNavContext);
 
-    function search(query: string, setItems: any) {
-        setIsLoading(true);
-        request({
-            path: "search",
-            data: {
-                query: query,
-            },
-        })
-            .then((result) => setItems(result.result))
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }
+    const { data, isLoading } = useSearchQuery(executeQuery ? searchValue : skipToken);
 
-    function handleClick(item: searchResultItem) {
+    function handleClick(item: SearchResultItem) {
         if (isEditing) {
             setEditingItem({
                 id: editingItem.id,
-                name: `${item.name} ${item.amount}`,
+                name: `${item.name} ${item.price.unitSize}`,
                 quantity: "",
-                url: item.link,
+                url: item.url,
                 checked: editingItem.checked,
                 status: editingItem.status,
                 sequence: editingItem.sequence,
@@ -101,7 +93,7 @@ export default function Search() {
         request({
             path: "addItem",
             data: {
-                item: { name: `${item.name} ${item.amount}`, quantity: "", url: item.link },
+                item: { name: `${item.name} ${item.price.unitSize}`, quantity: "", url: item.url },
             },
         });
         const itemsArray = items.slice();
@@ -112,8 +104,10 @@ export default function Search() {
     }
 
     useEffect(() => {
-        if (searchValue) search(searchValue, setItems);
-    }, []);
+        if (data) {
+            setItems(data);
+        }
+    }, [data]);
 
     return (
         <div>
@@ -121,7 +115,7 @@ export default function Search() {
                 <SearchBar
                     value={searchValue}
                     onChange={(newValue) => setSearchValue(newValue)}
-                    onRequestSearch={() => search(searchValue, setItems)}
+                    onRequestSearch={() => setExecuteQuery(true)}
                     className={classes.SearchBar}
                 />
             </div>
@@ -132,12 +126,12 @@ export default function Search() {
                     items.map((item) => (
                         <Card className={classes.Card} key={item.id}>
                             <CardContent className={classes.CardContent}>
-                                <img src={item.img} alt="" width={"auto"} className={classes.AlignSelfCenter} loading={"lazy"} />
+                                <img src={item.imageUrl} alt="" width={"auto"} className={classes.AlignSelfCenter} loading={"lazy"} />
                                 <Typography variant={"h6"}>{item.name}</Typography>
                                 <div className={classes.CardContentInnerDiv}>
                                     <div>
-                                        <Typography>{item.amount}</Typography>
-                                        <Typography>€{item.price}</Typography>
+                                        <Typography>{item.price.unitSize}</Typography>
+                                        <Typography>€{item.price.amount}</Typography>
                                     </div>
                                     <IconButton onClick={() => handleClick(item)}>{item.checked ? <CheckIcon /> : <AddIcon />}</IconButton>
                                 </div>

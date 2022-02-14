@@ -1,6 +1,6 @@
 export enum status {
-    open,
-    closed,
+    open = 1,
+    closed = 2,
 }
 
 export interface Item {

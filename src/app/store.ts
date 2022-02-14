@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import itemsReducer from "../slices/items/items.slice";
+import standardItemsReducer from "../slices/standardItems/standardItems.slice";
 import { shoppinglistApi } from "../slices/api/api.slice";
 import { setupListeners } from "@reduxjs/toolkit/query";
 
 export const store = configureStore({
     reducer: {
         [shoppinglistApi.reducerPath]: shoppinglistApi.reducer,
-        items: itemsReducer,
+        standardItems: standardItemsReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(shoppinglistApi.middleware),
 });

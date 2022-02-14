@@ -8,6 +8,9 @@ import ConfirmationModal from "./components/ConfirmationModal";
 import useRequest from "../../hooks/useRequest";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { DefaultListItem } from "./components/DefaultListItem";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { setStandardItems } from "../../slices/standardItems/standardItems.slice";
+import { useGetAllStandardItemsQuery } from "../../slices/api/api.slice";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -24,11 +27,12 @@ const useStyles = makeStyles(() =>
 
 export default function DefaultItemList() {
     const classes = useStyles();
-    const [items, setItems] = useState<Item[]>([]);
-    const [isLoading, updateIsLoading] = useState(true);
     const [confirmationModalIsOpen, setIsOpen] = useState(false);
     const [itemId, setItemId] = useState(0);
     const [request] = useRequest();
+    const dispatch = useAppDispatch();
+    const items = useAppSelector((state) => state.standardItems.standardItems);
+    const { data, isLoading } = useGetAllStandardItemsQuery();
 
     const addItem = (item: unsubmittedItem): boolean => {
         if (!window.navigator.onLine) {
@@ -44,7 +48,7 @@ export default function DefaultItemList() {
                 },
             },
         })
-            .then((result) => setItems(items.concat(result.item)))
+            .then((result) => dispatch(setStandardItems(items.concat(result.item))))
             .catch((error) => {
                 console.error(error);
                 return false;
@@ -68,7 +72,7 @@ export default function DefaultItemList() {
             const element = itemsArray.find((element) => element.id === item.id);
             if (!element) return;
             element.checked = true;
-            setItems(itemsArray);
+            // setItems(itemsArray);
         });
     };
 
@@ -83,7 +87,7 @@ export default function DefaultItemList() {
         const item = itemsArray.find((element) => element.id === id);
         if (!item) return;
         if (item) itemsArray.splice(items.indexOf(item), 1);
-        setItems(itemsArray);
+        // setItems(itemsArray);
         request({
             path: "deleteStandardItem",
             data: {
@@ -93,16 +97,16 @@ export default function DefaultItemList() {
     };
 
     useEffect(() => {
-        request({ path: "getStandardItems" })
-            .then((result) =>
-                setItems(
-                    result.items.sort(function (a: Item, b: Item) {
+        if (data) {
+            dispatch(
+                setStandardItems(
+                    [...data].sort(function (a: Item, b: Item) {
                         return a.sequence - b.sequence;
                     })
                 )
-            )
-            .finally(() => updateIsLoading(false));
-    }, []);
+            );
+        }
+    }, [data]);
 
     return (
         <div>
@@ -128,7 +132,7 @@ export default function DefaultItemList() {
                             </div>
                         )}
                     </List>
-                    <AddItemModal addItemFunction={addItem} useHideOnScroll={true} />
+                    <AddItemModal useHideOnScroll={true} />
                     <ConfirmationModal isOpen={confirmationModalIsOpen} callback={deleteItem} setIsOpen={setIsOpen} id={itemId} />
                 </div>
             )}

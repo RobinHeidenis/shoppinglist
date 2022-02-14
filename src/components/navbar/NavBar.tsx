@@ -5,13 +5,11 @@ import SwipeableTemporaryDrawer from "./SideBar";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { MoreVert, Redeem } from "@material-ui/icons";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import useRequest from "../../hooks/useRequest";
 import history from "../lib/history";
 import { NavbarContext } from "../../contexts/NavbarContext";
 import { MenuIconButtonStart } from "./components/MenuIconButtonStart";
 import { MenuIconButtonEnd } from "./components/MenuIconButtonEnd";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { removeAllItems } from "../../slices/items/items.slice";
+import { useDeleteAllItemsMutation, useDeleteCheckedMutation } from "../../slices/api/api.slice";
 
 interface NavBarProps {
     isOnItemList: boolean;
@@ -32,15 +30,18 @@ export default function NavBar({ isOnItemList }: NavBarProps) {
     const classes = useStyles();
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [request] = useRequest();
-    const items = useAppSelector((state) => state.items.items);
-    const dispatch = useAppDispatch();
     const { title, hasBackButton } = useContext(NavbarContext);
+    const [deleteAllItems] = useDeleteAllItemsMutation();
+    const [deleteCheckedItems] = useDeleteCheckedMutation();
 
-    const handleMenuItemClick = () => {
+    const handleDeleteAllItems = () => {
         setAnchorEl(null);
-        if (items.length === 0) return;
-        request({ path: "deleteAllItems" }).then(() => dispatch(removeAllItems()));
+        deleteAllItems();
+    };
+
+    const handleDeleteCheckedItems = () => {
+        setAnchorEl(null);
+        deleteCheckedItems();
     };
 
     return (
@@ -72,7 +73,8 @@ export default function NavBar({ isOnItemList }: NavBarProps) {
                                 <MoreVert />
                             </MenuIconButtonEnd>
                             <Menu id="itemMenu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
-                                <MenuItem onClick={handleMenuItemClick}>Remove all items</MenuItem>
+                                <MenuItem onClick={handleDeleteCheckedItems}>Remove checked items</MenuItem>
+                                <MenuItem onClick={handleDeleteAllItems}>Remove all items</MenuItem>
                             </Menu>
                         </div>
                     )}
