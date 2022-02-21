@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import NavBar from "./components/navbar/NavBar";
 import { Route, Router } from "react-router-dom";
 import { ShoppingList } from "./pages/shoppingList/shoppingList";
@@ -8,22 +8,11 @@ import Settings from "./pages/settings/settings";
 import LoginForm from "./pages/login/LoginForm";
 import history from "./components/lib/history";
 import { NavbarContext } from "./contexts/NavbarContext";
-import { setupEventSource } from "./app/eventSource";
-import { store } from "./app/store";
 
 function App(): JSX.Element {
     const [isOnItemList, setIsOnItemList] = useState(false);
     const [hasBackButton, setHasBackButton] = useState(false);
     const [title, setTitle] = useState("");
-
-    useEffect(() => {
-        let es = setupEventSource(store);
-        es.onerror = () => (es = setupEventSource(store));
-
-        return () => {
-            if (es.readyState && es.readyState === 1) es.close();
-        };
-    }, []);
 
     return (
         <div>

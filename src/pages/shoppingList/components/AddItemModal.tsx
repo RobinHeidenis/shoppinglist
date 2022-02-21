@@ -8,13 +8,14 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import AddIcon from "@material-ui/icons/Add";
 import { Fab, useScrollTrigger, Zoom } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { unsubmittedItem } from "../../../interfaces/item";
 import { SearchTextField } from "./SearchTextField";
+import { useAddItemMutation, useAddStandardItemMutation } from "../../../slices/api/api.slice";
+import { Item } from "../../../interfaces/item";
+import { MODAL_TYPE_ITEM, ModalType } from "../../../interfaces/modalType";
 
 interface AddItemModalProps {
-    addItemFunction(item: unsubmittedItem): boolean;
-
     useHideOnScroll: boolean;
+    modalType: ModalType;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,12 +28,14 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function AddItemModal({ addItemFunction, useHideOnScroll }: AddItemModalProps) {
+export default function AddItemModal({ useHideOnScroll, modalType }: AddItemModalProps) {
     const classes = useStyles();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [name, setName] = useState<string>(""); //using empty strings so react doesn't give uncontrolled input error.
     const [quantity, setQuantity] = useState<string>("");
     const [link, setLink] = useState<string>("");
+    const [addItem] = useAddItemMutation();
+    const [addStandardItem] = useAddStandardItemMutation();
 
     function HideOnScroll() {
         const trigger = useScrollTrigger({
@@ -57,15 +60,19 @@ export default function AddItemModal({ addItemFunction, useHideOnScroll }: AddIt
     const handleSubmit = () => {
         if (!name) return;
 
-        const item = {
+        const item: Partial<Item> = {
             name,
-            quantity,
-            url: link,
         };
 
-        if (addItemFunction(item)) {
-            handleDialogClose();
-        }
+        quantity && (item.quantity = quantity);
+        link && (item.url = link);
+
+        modalType === MODAL_TYPE_ITEM
+            ? addItem({
+                  ...item,
+                  categoryId: 1,
+              }).then(() => handleDialogClose())
+            : addStandardItem({ ...item, categoryId: 1 }).then(() => handleDialogClose());
     };
 
     return (
