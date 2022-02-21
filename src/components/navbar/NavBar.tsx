@@ -7,7 +7,7 @@ import { MoreVert, Redeem } from "@material-ui/icons";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import history from "../lib/history";
 import { NavbarContext } from "../../contexts/NavbarContext";
-import { MenuIconButton } from "./components/MenuIconButtonStart";
+import { MenuIconButton } from "./components/MenuIconButton";
 import { useDeleteAllItemsMutation, useDeleteCheckedMutation } from "../../slices/api/api.slice";
 
 interface NavBarProps {

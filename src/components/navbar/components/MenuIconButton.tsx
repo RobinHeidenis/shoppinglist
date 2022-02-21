@@ -11,16 +11,6 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export function MenuIconButtonStart({ children, label, onClick }: MenuIconButtonProps) {
-    const classes = useStyles();
-
-    return (
-        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label={label} onClick={onClick}>
-            {children}
-        </IconButton>
-    );
-}
-
 export const MenuIconButton = ({ children, label, onClick, end }: MenuIconButtonProps) => {
     const classes = useStyles();
 
