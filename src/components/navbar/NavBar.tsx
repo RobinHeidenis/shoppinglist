@@ -7,8 +7,7 @@ import { MoreVert, Redeem } from "@material-ui/icons";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import history from "../lib/history";
 import { NavbarContext } from "../../contexts/NavbarContext";
-import { MenuIconButtonStart } from "./components/MenuIconButtonStart";
-import { MenuIconButtonEnd } from "./components/MenuIconButtonEnd";
+import { MenuIconButton } from "./components/MenuIconButtonStart";
 import { useDeleteAllItemsMutation, useDeleteCheckedMutation } from "../../slices/api/api.slice";
 
 interface NavBarProps {
@@ -49,29 +48,29 @@ export default function NavBar({ isOnItemList }: NavBarProps) {
             <AppBar position={"sticky"}>
                 <Toolbar>
                     {hasBackButton ? (
-                        <MenuIconButtonStart label={"back"} onClick={() => history.goBack()}>
+                        <MenuIconButton label={"back"} onClick={() => history.goBack()}>
                             <ArrowBackIcon />
-                        </MenuIconButtonStart>
+                        </MenuIconButton>
                     ) : (
-                        <MenuIconButtonStart label="menu" onClick={() => setIsMenuOpen(true)}>
+                        <MenuIconButton label="menu" onClick={() => setIsMenuOpen(true)}>
                             <MenuIcon />
-                        </MenuIconButtonStart>
+                        </MenuIconButton>
                     )}
                     <Typography variant="h6" className={classes.title}>
                         {title}
                     </Typography>
 
                     {!hasBackButton && (
-                        <MenuIconButtonEnd label={"bonuscard button"} onClick={() => history.push("/bonuscard")}>
+                        <MenuIconButton end label={"bonuscard button"} onClick={() => history.push("/bonuscard")}>
                             <Redeem />
-                        </MenuIconButtonEnd>
+                        </MenuIconButton>
                     )}
 
                     {isOnItemList && (
                         <div>
-                            <MenuIconButtonEnd label={"menu button"} onClick={(e) => setAnchorEl(e.currentTarget as HTMLElement)}>
+                            <MenuIconButton end label={"menu button"} onClick={(e) => setAnchorEl(e.currentTarget as HTMLElement)}>
                                 <MoreVert />
-                            </MenuIconButtonEnd>
+                            </MenuIconButton>
                             <Menu id="itemMenu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
                                 <MenuItem onClick={handleDeleteCheckedItems}>Remove checked items</MenuItem>
                                 <MenuItem onClick={handleDeleteAllItems}>Remove all items</MenuItem>
