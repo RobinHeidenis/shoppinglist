@@ -8,6 +8,7 @@ import DragDropList from "./components/DragDropList";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { EditContext } from "../../contexts/EditContext";
 import { useUpdateItemMutation } from "../../slices/api/api.slice";
+import { MODAL_TYPE_ITEM } from "../../interfaces/modalType";
 
 interface ItemListProps {
     setIsOnItemList: (newValue: boolean) => void;
@@ -37,7 +38,7 @@ export default function ItemList({ setIsOnItemList }: ItemListProps) {
     };
 
     const openEditDialog = (item: Item) => {
-        if (item.status === 1) return;
+        if (item.status === 2) return;
         setIsEditDialogOpen(true);
         setEditingItem(item);
     };
@@ -71,7 +72,7 @@ export default function ItemList({ setIsOnItemList }: ItemListProps) {
             <div className={classes.paddingBottom}>
                 <DragDropList openEditDialog={openEditDialog} />
             </div>
-            <AddItemModal useHideOnScroll={false} />
+            <AddItemModal useHideOnScroll={false} modalType={MODAL_TYPE_ITEM} />
             <EditItemModal editItemFunction={editItem} />
         </div>
     );

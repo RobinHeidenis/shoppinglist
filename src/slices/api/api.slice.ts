@@ -1,16 +1,26 @@
+// noinspection TypeScriptValidateJSTypes
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { Item } from "../../interfaces/item";
 import { SearchResultItem } from "../../pages/shoppingList/search";
+import { StandardItem } from "../../interfaces/standardItem";
+import { AuthRequest, AuthResponse } from "../../interfaces/authRequest";
+import { RootState } from "../../app/store";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 export const shoppinglistApi = createApi({
     reducerPath: "shoppinglistApi",
     tagTypes: ["items", "standardItems"],
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:3001/api/v2/",
-        prepareHeaders: (headers) => {
-            headers.set("Authorization", "Bearer " + localStorage.getItem("authToken"));
+        baseUrl: "https://shoppinglist-backend.heidenis.com/api/v2/",
+        prepareHeaders: (headers, { getState }) => {
+            const token = (getState() as RootState).persistedReducer.accessToken;
+            if (token) {
+                headers.set("authorization", `Bearer ${token}`);
+            }
             return headers;
         },
+        credentials: "include",
     }),
     endpoints: (builder) => ({
         getItemById: builder.query<Item, number>({
@@ -22,15 +32,81 @@ export const shoppinglistApi = createApi({
                 [...response].sort((a: Item, b: Item) => {
                     return a.sequence - b.sequence;
                 }),
+            async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getState }) {
+                try {
+                    await cacheDataLoaded;
+
+                    if (!process.env.REACT_APP_EVENTS_URL) throw new Error("Events url is not defined");
+                    // @ts-ignore
+                    const token = getState().persistedReducer.accessToken;
+
+                    await fetchEventSource(process.env.REACT_APP_EVENTS_URL, {
+                        onmessage(event) {
+                            const eventData = JSON.parse(event.data);
+
+                            if (event.event === "item.create") {
+                                updateCachedData((draft) => {
+                                    draft.push(eventData);
+                                });
+                            }
+                            if (event.event === "item.update") {
+                                updateCachedData((draft) => {
+                                    const foundItem = draft.find((item) => item.id === eventData.id);
+                                    if (foundItem) {
+                                        Object.assign(foundItem, eventData);
+                                    } else {
+                                        draft.push(eventData);
+                                    }
+                                });
+                            }
+                            if (event.event === "item.updateSequences") {
+                                updateCachedData((draft) => {
+                                    draft.forEach((item) => {
+                                        const foundSequenceItem = eventData.find(
+                                            (sequenceItem: { id: number; sequence: number }) => sequenceItem.id === item.id
+                                        );
+                                        item.sequence = foundSequenceItem ? foundSequenceItem.sequence : item.sequence;
+                                    });
+                                    draft.sort((a: Item, b: Item) => {
+                                        return a.sequence - b.sequence;
+                                    });
+                                });
+                            }
+                            if (event.event === "item.delete") {
+                                updateCachedData((draft) => {
+                                    const foundIndex = draft.findIndex((item) => item.id === eventData);
+                                    if (foundIndex === -1) return;
+                                    draft.splice(foundIndex, 1);
+                                });
+                            }
+                            if (event.event === "item.deleteAll") {
+                                updateCachedData(() => {
+                                    return [];
+                                });
+                            }
+                            if (event.event === "item.deleteChecked") {
+                                updateCachedData((draft) => {
+                                    return draft.filter((item) => item.status === 1);
+                                });
+                            }
+                            console.log(event);
+                        },
+                        headers: {
+                            authorization: `Bearer ${token}`,
+                        },
+                        credentials: "include",
+                    });
+                } catch (e) {}
+            },
             providesTags: ["items"],
         }),
         search: builder.query<SearchResultItem[], string>({
             query: (query) => `search/${query}`,
         }),
-        getStandardItemById: builder.query<Item, number>({
+        getStandardItemById: builder.query<StandardItem, number>({
             query: (id) => `standardItem/${id}`,
         }),
-        getAllStandardItems: builder.query<Item[], void>({
+        getAllStandardItems: builder.query<StandardItem[], void>({
             query: () => `standardItem/all`,
         }),
         addItem: builder.mutation<Item, Partial<Item>>({
@@ -56,6 +132,17 @@ export const shoppinglistApi = createApi({
                 method: "PATCH",
                 body: patch,
             }),
+            onQueryStarted(item, { dispatch, queryFulfilled }) {
+                const patchResult = dispatch(
+                    shoppinglistApi.util.updateQueryData("getAllItems", undefined, (draft) => {
+                        const foundItem = draft.find((draftItem) => draftItem.id === item.id);
+                        if (foundItem) {
+                            Object.assign(foundItem, item);
+                        }
+                    })
+                );
+                queryFulfilled.catch(patchResult.undo);
+            },
         }),
         deleteItem: builder.mutation<void, number>({
             query: (id) => ({
@@ -83,7 +170,7 @@ export const shoppinglistApi = createApi({
                     await queryFulfilled;
                     dispatch(
                         shoppinglistApi.util.updateQueryData("getAllItems", undefined, (draft) => {
-                            return (draft = []);
+                            return [];
                         })
                     );
                 } catch {}
@@ -161,6 +248,69 @@ export const shoppinglistApi = createApi({
                 queryFulfilled.catch(patchResult.undo);
             },
         }),
+        addStandardItem: builder.mutation<StandardItem, Partial<StandardItem>>({
+            query: (standardItem) => ({
+                url: `standardItem`,
+                method: "POST",
+                body: standardItem,
+            }),
+            async onQueryStarted(patch, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(
+                        shoppinglistApi.util.updateQueryData("getAllStandardItems", undefined, (draft) => {
+                            draft.push(data);
+                        })
+                    );
+                } catch {}
+            },
+        }),
+        updateStandardItem: builder.mutation<StandardItem, Partial<StandardItem> & Pick<StandardItem, "id">>({
+            query: ({ id, ...patch }) => ({
+                url: `standardItem/${id}`,
+                method: "PATCH",
+                body: patch,
+            }),
+        }),
+        deleteStandardItem: builder.mutation<void, number>({
+            query: (id) => ({
+                url: `standardItem/${id}`,
+                method: "DELETE",
+            }),
+            onQueryStarted(id, { dispatch, queryFulfilled }) {
+                const patchResult = dispatch(
+                    shoppinglistApi.util.updateQueryData("getAllStandardItems", undefined, (draft) => {
+                        const standardItemIndex = draft.findIndex((standardItem) => standardItem.id === id);
+                        if (standardItemIndex === -1) return;
+                        draft.splice(standardItemIndex, 1);
+                    })
+                );
+                queryFulfilled.catch(patchResult.undo);
+            },
+        }),
+        deleteAllStandardItems: builder.mutation<void, void>({
+            query: () => ({
+                url: `standardItem/all`,
+                method: "DELETE",
+            }),
+            async onQueryStarted(patch, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(
+                        shoppinglistApi.util.updateQueryData("getAllStandardItems", undefined, (draft) => {
+                            return [];
+                        })
+                    );
+                } catch {}
+            },
+        }),
+        login: builder.mutation<AuthResponse, AuthRequest>({
+            query: (credentials) => ({
+                url: `authentication/login`,
+                method: "POST",
+                body: credentials,
+            }),
+        }),
     }),
 });
 
@@ -178,4 +328,9 @@ export const {
     useDeleteCheckedMutation,
     useCheckItemMutation,
     useUncheckItemMutation,
+    useAddStandardItemMutation,
+    useUpdateStandardItemMutation,
+    useDeleteStandardItemMutation,
+    useDeleteAllStandardItemsMutation,
+    useLoginMutation,
 } = shoppinglistApi;

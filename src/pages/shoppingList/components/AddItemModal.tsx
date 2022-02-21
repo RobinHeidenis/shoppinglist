@@ -9,11 +9,13 @@ import AddIcon from "@material-ui/icons/Add";
 import { Fab, useScrollTrigger, Zoom } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { SearchTextField } from "./SearchTextField";
-import { useAddItemMutation } from "../../../slices/api/api.slice";
+import { useAddItemMutation, useAddStandardItemMutation } from "../../../slices/api/api.slice";
 import { Item } from "../../../interfaces/item";
+import { MODAL_TYPE_ITEM, ModalType } from "../../../interfaces/modalType";
 
 interface AddItemModalProps {
     useHideOnScroll: boolean;
+    modalType: ModalType;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -26,13 +28,14 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function AddItemModal({ useHideOnScroll }: AddItemModalProps) {
+export default function AddItemModal({ useHideOnScroll, modalType }: AddItemModalProps) {
     const classes = useStyles();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [name, setName] = useState<string>(""); //using empty strings so react doesn't give uncontrolled input error.
     const [quantity, setQuantity] = useState<string>("");
     const [link, setLink] = useState<string>("");
     const [addItem] = useAddItemMutation();
+    const [addStandardItem] = useAddStandardItemMutation();
 
     function HideOnScroll() {
         const trigger = useScrollTrigger({
@@ -64,7 +67,12 @@ export default function AddItemModal({ useHideOnScroll }: AddItemModalProps) {
         quantity && (item.quantity = quantity);
         link && (item.url = link);
 
-        addItem({ ...item, categoryId: 1 }).then(() => handleDialogClose());
+        modalType === MODAL_TYPE_ITEM
+            ? addItem({
+                  ...item,
+                  categoryId: 1,
+              }).then(() => handleDialogClose())
+            : addStandardItem({ ...item, categoryId: 1 }).then(() => handleDialogClose());
     };
 
     return (

@@ -19,4 +19,4 @@ export interface SequenceItem {
     sequence: number;
 }
 
-export type unsubmittedItem = Omit<Item, "id" | "status" | "sequence">;
+export type UnsubmittedItem = Omit<Item, "id" | "status" | "sequence">;

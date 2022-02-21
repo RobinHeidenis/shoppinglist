@@ -6,8 +6,11 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import history from "../../components/lib/history";
 import { NavbarContext } from "../../contexts/NavbarContext";
+import { useLoginMutation } from "../../slices/api/api.slice";
+import { useAppDispatch } from "../../hooks/redux";
+import { setCredentials } from "../../slices/auth/auth.slice";
+import history from "../../components/lib/history";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -29,24 +32,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-async function submit(username: string, password: string) {
-    if (!process.env.REACT_APP_API_URL) throw new Error("EVENTS_URL environment variable has not been set.");
-    const r = await fetch(process.env.REACT_APP_API_URL + "login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-    }).then((r) => r.json());
-
-    if (!r.status) {
-        localStorage.setItem("authToken", r.accessToken);
-        localStorage.setItem("refreshToken", r.refreshToken);
-        history.push("/");
-    }
-}
-
 export default function LoginForm() {
+    const [login] = useLoginMutation();
+    const dispatch = useAppDispatch();
     const classes = useStyles();
     const { setTitle } = useContext(NavbarContext);
     const [username, setUsername] = useState("");
@@ -68,9 +56,16 @@ export default function LoginForm() {
                 <form
                     className={classes.form}
                     noValidate
-                    onSubmit={(event) => {
+                    onSubmit={async (event) => {
                         event.preventDefault();
-                        submit(username, password);
+                        try {
+                            const tokens = await login({ username, password }).unwrap();
+                            dispatch(setCredentials(tokens));
+                            history.push("/");
+                        } catch (e) {
+                            //TODO: add toast notification here
+                            console.error(e);
+                        }
                     }}
                 >
                     <TextField
