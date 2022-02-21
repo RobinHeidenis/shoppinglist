@@ -14,6 +14,7 @@ export const shoppinglistApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: "https://shoppinglist-backend.heidenis.com/api/v2/",
         prepareHeaders: (headers, { getState }) => {
+            // @ts-ignore
             const token = (getState() as RootState).persistedReducer.accessToken;
             if (token) {
                 headers.set("authorization", `Bearer ${token}`);
