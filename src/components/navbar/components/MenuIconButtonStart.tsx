@@ -20,3 +20,19 @@ export function MenuIconButtonStart({ children, label, onClick }: MenuIconButton
         </IconButton>
     );
 }
+
+export const MenuIconButton = ({ children, label, onClick, end }: MenuIconButtonProps) => {
+    const classes = useStyles();
+
+    return (
+        <IconButton
+            edge={end ? "end" : "start"}
+            className={!end ? classes.menuButton : ""}
+            color="inherit"
+            aria-label={label}
+            onClick={onClick}
+        >
+            {children}
+        </IconButton>
+    );
+};
