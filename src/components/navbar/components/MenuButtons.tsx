@@ -9,6 +9,15 @@ interface MenuButtonsProps {
     setIsMenuOpen: (newValue: boolean) => void;
 }
 
+/**
+ * Functional Component.
+ *
+ * Gets the `hasBackButton` property from the {@link NavbarContext}.
+ * Uses this property to determine if a "back" button or a "menu" button should be shown.
+ *
+ * @param setIsMenuOpen - Function to open the drawer.
+ * @constructor
+ */
 export const MenuButtons = ({ setIsMenuOpen }: MenuButtonsProps) => {
     const { hasBackButton } = useContext(NavbarContext);
 
