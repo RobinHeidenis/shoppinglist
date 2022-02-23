@@ -18,15 +18,16 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 /**
- * Functional Component
+ * Functional Component.
  *
  * Takes children, a label, an onClick handler, and if the button is at the end or not.
  * Returns a menu icon button with certain properties set.
  * Will change classes based on if the end boolean is set or not.
- * @param children
- * @param label
- * @param onClick
- * @param end
+ *
+ * @param children - The React Nodes to be shown inside the {@link IconButton}.
+ * @param label - The label for the {@link IconButton}
+ * @param onClick - Function that gets called when a user clicks on the button
+ * @param end - Boolean that specifies if the button should position itself at the end of the container.
  * @constructor
  */
 export const MenuIconButton = ({ children, label, onClick, end }: MenuIconButtonProps) => {
