@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import NavBar from "./components/navbar/NavBar";
+import { NavBar } from "./components/navbar/NavBar";
 import { Route, Router } from "react-router-dom";
 import { ShoppingList } from "./pages/shoppingList/shoppingList";
 import { CssBaseline } from "@material-ui/core";
@@ -9,7 +9,15 @@ import LoginForm from "./pages/login/LoginForm";
 import history from "./components/lib/history";
 import { NavbarContext } from "./contexts/NavbarContext";
 
-function App(): JSX.Element {
+/**
+ * Functional Component.<br/>
+ *
+ * The main App component.<br/>
+ * Has the main router, which renders the different 'pages'.
+ * Also includes the navbar, sidebar, and a CSS Baseline to allow custom styles without compatibility issues.
+ * @constructor
+ */
+const App = (): JSX.Element => {
     const [isOnItemList, setIsOnItemList] = useState(false);
     const [hasBackButton, setHasBackButton] = useState(false);
     const [title, setTitle] = useState("");
@@ -36,6 +44,6 @@ function App(): JSX.Element {
             </NavbarContext.Provider>
         </div>
     );
-}
+};
 
 export default App;
