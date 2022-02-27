@@ -4,22 +4,20 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import MenuIcon from "@material-ui/icons/Menu";
 import React, { useContext } from "react";
 import { NavbarContext } from "../../../contexts/NavbarContext";
-
-interface MenuButtonsProps {
-    setIsMenuOpen: (newValue: boolean) => void;
-}
+import { SideBarContext } from "../../../contexts/SideBarContext";
 
 /**
- * Functional Component.
+ * Functional Component.<br/>
  *
- * Gets the `hasBackButton` property from the {@link NavbarContext}.
+ * Gets the `hasBackButton` property from the {@link NavbarContext}.<br/>
+ * Gets the `setIsDrawerOpen` function from the {@link SideBarContext}.<br/>
  * Uses this property to determine if a "back" button or a "menu" button should be shown.
  *
- * @param setIsMenuOpen - Function to open the drawer.
  * @constructor
  */
-export const MenuButtons = ({ setIsMenuOpen }: MenuButtonsProps) => {
+export const MenuButtons = () => {
     const { hasBackButton } = useContext(NavbarContext);
+    const { setIsDrawerOpen } = useContext(SideBarContext);
 
     if (hasBackButton) {
         return (
@@ -30,7 +28,7 @@ export const MenuButtons = ({ setIsMenuOpen }: MenuButtonsProps) => {
     }
 
     return (
-        <MenuIconButton label="menu" onClick={() => setIsMenuOpen(true)}>
+        <MenuIconButton label="menu" onClick={() => setIsDrawerOpen(true)}>
             <MenuIcon />
         </MenuIconButton>
     );

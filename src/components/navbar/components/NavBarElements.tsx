@@ -8,7 +8,6 @@ import { NavbarContext } from "../../../contexts/NavbarContext";
 
 interface NavBarElementsProps {
     isOnItemList: boolean;
-    setIsMenuOpen: (newValue: boolean) => void;
 }
 
 /**
@@ -22,14 +21,13 @@ interface NavBarElementsProps {
  * Only shows the "more options" button if `isOnItemList` is true
  *
  * @param isOnItemList - True if the currently selected page is the item list.
- * @param setIsMenuOpen - Function to open the drawer.
  */
-export const NavBarElements = ({ isOnItemList, setIsMenuOpen }: NavBarElementsProps) => {
+export const NavBarElements = ({ isOnItemList }: NavBarElementsProps) => {
     const { hasBackButton } = useContext(NavbarContext);
 
     return (
         <Toolbar>
-            <MenuButtons setIsMenuOpen={setIsMenuOpen} />
+            <MenuButtons />
             <MenuTitle />
             {!hasBackButton && <MenuBonusCardButton />}
             {isOnItemList && <MenuMoreOptionsButton />}

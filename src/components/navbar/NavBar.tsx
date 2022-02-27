@@ -1,8 +1,9 @@
 import { AppBar } from "@material-ui/core";
 import React, { useContext, useState } from "react";
-import SwipeableTemporaryDrawer from "./SideBar";
+import { SideBar } from "../SideBar/SideBar";
 import { NavbarContext } from "../../contexts/NavbarContext";
 import { NavBarElements } from "./components/NavBarElements";
+import { SideBarContext } from "../../contexts/SideBarContext";
 
 interface NavBarProps {
     isOnItemList: boolean;
@@ -18,16 +19,16 @@ interface NavBarProps {
  *
  * @param isOnItemList - True if the currently selected page is the item list.
  */
-export default function NavBar({ isOnItemList }: NavBarProps) {
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+export const NavBar = ({ isOnItemList }: NavBarProps) => {
+    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const { hasBackButton } = useContext(NavbarContext);
 
     return (
-        <>
+        <SideBarContext.Provider value={{ isDrawerOpen, setIsDrawerOpen }}>
             <AppBar position={"sticky"}>
-                <NavBarElements isOnItemList={isOnItemList} setIsMenuOpen={setIsMenuOpen} />
+                <NavBarElements isOnItemList={isOnItemList} />
             </AppBar>
-            {!hasBackButton && <SwipeableTemporaryDrawer updateMenuState={setIsMenuOpen} menuOpen={isMenuOpen} />}
-        </>
+            {!hasBackButton && <SideBar />}
+        </SideBarContext.Provider>
     );
-}
+};
