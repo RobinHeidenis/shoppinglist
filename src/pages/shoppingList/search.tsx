@@ -4,19 +4,22 @@ import { Card, CardContent, IconButton, Typography } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import CheckIcon from "@material-ui/icons/Check";
 import LoadingSearch from "./components/LoadingSearch";
-import useRequest from "../../hooks/useRequest";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { SearchContext } from "../../contexts/SearchContext";
 import { EditContext } from "../../contexts/EditContext";
 import { BottomNavContext } from "../../contexts/BottomNavContext";
+import { skipToken } from "@reduxjs/toolkit/query";
+import { useAddItemMutation, useSearchQuery } from "../../slices/api/api.slice";
 
-interface searchResultItem {
+export interface SearchResultItem {
+    id: number;
     name: string;
-    link: string;
-    img: string;
-    amount: string;
-    price: string;
-    id: string;
+    url: string;
+    imageUrl: string;
+    price: {
+        amount: number;
+        unitSize: string;
+    };
     checked: boolean;
 }
 
@@ -62,34 +65,22 @@ const useStyles = makeStyles(() =>
 
 export default function Search() {
     const classes = useStyles();
-    const [items, setItems] = useState([] as searchResultItem[]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [request] = useRequest();
+    const [items, setItems] = useState([] as SearchResultItem[]);
+    const [executeQuery, setExecuteQuery] = useState(false);
     const { searchValue, setSearchValue } = useContext(SearchContext);
     const { isEditing, setEditingItem, editingItem, setIsEditDialogOpen } = useContext(EditContext);
     const { setBottomNavValue } = useContext(BottomNavContext);
+    const [addItem] = useAddItemMutation();
 
-    function search(query: string, setItems: any) {
-        setIsLoading(true);
-        request({
-            path: "search",
-            data: {
-                query: query,
-            },
-        })
-            .then((result) => setItems(result.result))
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }
+    const { data, isLoading } = useSearchQuery(executeQuery ? searchValue : skipToken);
 
-    function handleClick(item: searchResultItem) {
+    function handleClick(item: SearchResultItem) {
         if (isEditing) {
             setEditingItem({
                 id: editingItem.id,
-                name: `${item.name} ${item.amount}`,
+                name: `${item.name} ${item.price.unitSize}`,
                 quantity: "",
-                url: item.link,
+                url: item.url,
                 checked: editingItem.checked,
                 status: editingItem.status,
                 sequence: editingItem.sequence,
@@ -98,22 +89,14 @@ export default function Search() {
             setBottomNavValue(1);
             return;
         }
-        request({
-            path: "addItem",
-            data: {
-                item: { name: `${item.name} ${item.amount}`, quantity: "", url: item.link },
-            },
-        });
-        const itemsArray = items.slice();
-        const element = itemsArray.find((element) => element.id === item.id);
-        if (!element) return;
-        element.checked = true;
-        setItems(itemsArray);
+        addItem({ name: `${item.name} ${item.price.unitSize}`, url: item.url });
     }
 
     useEffect(() => {
-        if (searchValue) search(searchValue, setItems);
-    }, []);
+        if (data) {
+            setItems(data);
+        }
+    }, [data]);
 
     return (
         <div>
@@ -121,7 +104,7 @@ export default function Search() {
                 <SearchBar
                     value={searchValue}
                     onChange={(newValue) => setSearchValue(newValue)}
-                    onRequestSearch={() => search(searchValue, setItems)}
+                    onRequestSearch={() => setExecuteQuery(true)}
                     className={classes.SearchBar}
                 />
             </div>
@@ -132,12 +115,19 @@ export default function Search() {
                     items.map((item) => (
                         <Card className={classes.Card} key={item.id}>
                             <CardContent className={classes.CardContent}>
-                                <img src={item.img} alt="" width={"auto"} className={classes.AlignSelfCenter} loading={"lazy"} />
+                                <img
+                                    src={item.imageUrl}
+                                    alt=""
+                                    width={"auto"}
+                                    height={220}
+                                    className={classes.AlignSelfCenter}
+                                    loading={"lazy"}
+                                />
                                 <Typography variant={"h6"}>{item.name}</Typography>
                                 <div className={classes.CardContentInnerDiv}>
                                     <div>
-                                        <Typography>{item.amount}</Typography>
-                                        <Typography>€{item.price}</Typography>
+                                        <Typography>{item.price.unitSize}</Typography>
+                                        <Typography>€{item.price.amount}</Typography>
                                     </div>
                                     <IconButton onClick={() => handleClick(item)}>{item.checked ? <CheckIcon /> : <AddIcon />}</IconButton>
                                 </div>

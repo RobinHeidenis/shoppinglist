@@ -25,11 +25,9 @@ export default function EditItemModal({ editItemFunction }: EditItemModalProps) 
         setIsEditDialogOpen(false);
         if (!name) return;
 
-        editingItem.name = name;
-        editingItem.quantity = quantity;
-        editingItem.url = link;
+        const item: Item = { ...editingItem, name, quantity, url: link };
 
-        if (editItemFunction(editingItem)) {
+        if (editItemFunction(item)) {
             setName("");
             setQuantity("");
             setLink("");

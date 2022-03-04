@@ -18,7 +18,7 @@ export const EditContext = createContext<EditContextSchema>({
         name: "",
         quantity: "",
         url: "",
-        status: 0,
+        status: 1,
     } as Item,
     setEditingItem: () => undefined,
     isEditDialogOpen: false,

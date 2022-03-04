@@ -56,7 +56,7 @@ export function ShoppingList({ setIsOnItemList }: ShoppingListProps) {
         name: "",
         quantity: "",
         url: "",
-        status: 0,
+        status: 1,
     } as Item);
     const { setTitle } = useContext(NavbarContext);
 

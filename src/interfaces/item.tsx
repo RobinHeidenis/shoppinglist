@@ -1,6 +1,6 @@
 export enum status {
-    open,
-    closed,
+    open = 1,
+    closed = 2,
 }
 
 export interface Item {
@@ -11,6 +11,7 @@ export interface Item {
     checked?: boolean;
     status: status;
     sequence: number;
+    categoryId?: number;
 }
 
 export interface SequenceItem {
@@ -18,4 +19,4 @@ export interface SequenceItem {
     sequence: number;
 }
 
-export type unsubmittedItem = Omit<Item, "id" | "status" | "sequence">;
+export type UnsubmittedItem = Omit<Item, "id" | "status" | "sequence">;
