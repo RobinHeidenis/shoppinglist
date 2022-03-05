@@ -3,7 +3,7 @@ import List from "@material-ui/core/List";
 import { Item } from "../../../interfaces/item";
 import { Divider, Typography } from "@material-ui/core";
 import React, { useState } from "react";
-import SwipeableItem from "./SwipeableItem";
+import { SwipeableItem } from "./SwipeableItem";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { useGetAllItemsQuery, useUpdateSequencesMutation } from "../../../slices/api/api.slice";
 import LoadingList from "./LoadingList";
