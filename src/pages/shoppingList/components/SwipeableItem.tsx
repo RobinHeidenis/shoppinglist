@@ -2,12 +2,11 @@ import { Item, status } from "../../../interfaces/item";
 import DoneIcon from "@material-ui/icons/Done";
 import UndoIcon from "@material-ui/icons/Undo";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { IconButton } from "@material-ui/core";
-import LinkIcon from "@material-ui/icons/Link";
 import React from "react";
 import SwipeableListItem from "../../../components/lib/SwipeableListItem";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { useCheckItemMutation, useDeleteItemMutation, useUncheckItemMutation } from "../../../slices/api/api.slice";
+import { ItemLinkIcon } from "./ItemLinkIcon";
 
 interface SwipeableListItemProps {
     item: Item;
@@ -15,7 +14,16 @@ interface SwipeableListItemProps {
     openEditDialog: (item: Item) => void;
 }
 
-const useStyles = makeStyles(() =>
+/**
+ * Styles
+ *
+ * Returns the styles for the {@link SwipeableItem} component.
+ *
+ * Is used to set the opacity and strike through values for a done item,
+ * or full opacity for a not done item.
+ * Provides a class for setting opacity zero for a non-existent link, to keep the spacing consistent.
+ */
+export const useStyles = makeStyles(() =>
     createStyles({
         opacityZero: {
             opacity: "0%",
@@ -30,11 +38,40 @@ const useStyles = makeStyles(() =>
     })
 );
 
-export default function SwipeableItem({ item, isDisabled, openEditDialog }: SwipeableListItemProps) {
+/**
+ * Functional Component.
+ *
+ * Returns a swipe-able item which shows the current item name, amount, and a link icon if a link is present on the item object.
+ * Allows the user to swipe right, marking it as done (or undone if status is already done).
+ * Allows the user to swipe left, deleting the item.
+ * These changes are immediately sent to the server through {@link shoppinglistApi RTK Query}
+ *
+ * @param item - The item shown in this list item.
+ * @param isDisabled - Whether this list item is currently being dragged. This prop disables the swiping on the item.
+ * @param openEditDialog - A function to open the edit dialog with this item.
+ * @constructor
+ */
+export const SwipeableItem = ({ item, isDisabled, openEditDialog }: SwipeableListItemProps) => {
     const classes = useStyles();
     const [deleteItem] = useDeleteItemMutation();
     const [checkItem] = useCheckItemMutation();
     const [uncheckItem] = useUncheckItemMutation();
+
+    const backgroundStyles = {
+        actionIconRight: item.status === status.open ? <DoneIcon /> : <UndoIcon />,
+        backgroundColorRight: item.status === status.open ? "#008000" : "orange",
+        actionIconLeft: <DeleteIcon />,
+        backgroundColorLeft: "red",
+    };
+
+    const listItemTextProps = {
+        primaryTypographyProps: {
+            className: classes.itemDone,
+        },
+        secondaryTypographyProps: {
+            className: classes.itemDone,
+        },
+    };
 
     return (
         <SwipeableListItem
@@ -43,46 +80,13 @@ export default function SwipeableItem({ item, isDisabled, openEditDialog }: Swip
             onClickEventHandler={() => {
                 openEditDialog(item);
             }}
-            background={{
-                actionIconRight: item.status === status.open ? <DoneIcon /> : <UndoIcon />,
-                backgroundColorRight: item.status === status.open ? "#008000" : "orange",
-                actionIconLeft: <DeleteIcon />,
-                backgroundColorLeft: "red",
-            }}
+            background={backgroundStyles}
             onSwipedRight={() => (item.status === status.open ? checkItem(item.id) : uncheckItem(item.id))}
             onSwipedLeft={() => item.id && deleteItem(item.id)}
             primaryText={item.name}
             secondaryText={item.quantity}
-            itemIcon={
-                item.url ? (
-                    <IconButton
-                        aria-label="link to product on ah.nl"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(item.url);
-                        }}
-                        className={item.status === status.closed ? classes.itemDone : classes.itemNotDone}
-                    >
-                        <LinkIcon />
-                    </IconButton>
-                ) : (
-                    <IconButton disabled>
-                        <LinkIcon className={classes.opacityZero} />
-                    </IconButton>
-                )
-            }
-            ListItemTextProps={
-                item.status === status.closed
-                    ? {
-                          primaryTypographyProps: {
-                              className: classes.itemDone,
-                          },
-                          secondaryTypographyProps: {
-                              className: classes.itemDone,
-                          },
-                      }
-                    : undefined
-            }
+            itemIcon={<ItemLinkIcon item={item} />}
+            ListItemTextProps={item.status === status.closed && listItemTextProps}
         />
     );
-}
+};

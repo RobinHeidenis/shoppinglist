@@ -9,6 +9,7 @@ import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { EditContext } from "../../contexts/EditContext";
 import { useUpdateItemMutation } from "../../slices/api/api.slice";
 import { MODAL_TYPE_ITEM } from "../../interfaces/modalType";
+import { SwipeableItem } from "./components/SwipeableItem";
 
 interface ItemListProps {
     setIsOnItemList: (newValue: boolean) => void;
@@ -71,6 +72,11 @@ export default function ItemList({ setIsOnItemList }: ItemListProps) {
             </Snackbar>
             <div className={classes.paddingBottom}>
                 <DragDropList openEditDialog={openEditDialog} />
+                <SwipeableItem
+                    item={{ id: 1, name: "pee", quantity: "", url: "asd", status: 2, sequence: 1 }}
+                    isDisabled={false}
+                    openEditDialog={openEditDialog}
+                />
             </div>
             <AddItemModal useHideOnScroll={false} modalType={MODAL_TYPE_ITEM} />
             <EditItemModal editItemFunction={editItem} />
