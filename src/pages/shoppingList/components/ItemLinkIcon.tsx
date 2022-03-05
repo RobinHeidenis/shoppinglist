@@ -17,12 +17,12 @@ import { useStyles } from "./SwipeableItem";
 export const ItemLinkIcon = ({ item }: { item: Item }) => {
     const classes = useStyles();
 
-    let className;
+    let className = classes.opacityZero;
 
     if (item.url) {
         if (item.status === status.closed) className = classes.itemDone;
         else className = classes.itemNotDone;
-    } else className = classes.opacityZero;
+    }
 
     return (
         <IconButton
