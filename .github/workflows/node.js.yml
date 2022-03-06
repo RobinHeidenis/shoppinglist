@@ -11,21 +11,32 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    runs-on: self-hosted
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js 16
       uses: actions/setup-node@v2
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: '16'
         cache: 'npm'
-    - run: yarn install
-    - run: yarn build
-    - run: yarn test --passWithNoTests
+    - name: Install dependencies
+      run: yarn install
+    - name: Build project
+      run: yarn build
+    - name: Test project
+      run: yarn test --passWithNoTests
+    
+  deploy:
+    runs-on: self-hosted
+    
+    needs: build
+    
+    steps:
+    - uses: sebastianpopp/ftp-action@v2.0.0
+      with:
+        host: ${{ secrets.FTP_HOST }}
+        user: ${{ secrets.FTP_USER }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        forceSsl: true
+        localDir: "build"
