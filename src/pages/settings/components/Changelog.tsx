@@ -20,6 +20,13 @@ export function Changelog() {
             </AccordionSummary>
             <AccordionDetails>
                 <div>
+                    <Typography>06-03-2022</Typography>
+                    <ul>
+                        <li>Moved to Redux and use RTK query for requests</li>
+                        <li>Various refactors to improve code quality</li>
+                        <li>Created pipeline to automatically deploy updates</li>
+                        <li>This should be the first deployment through the new pipeline!</li>
+                    </ul>
                     <Typography>30-04-2021</Typography>
                     <ul>
                         <li>Fixed bug with dragging to reorder</li>
@@ -39,14 +46,6 @@ export function Changelog() {
                         <li>Added conditional showing of bonuscard button and three dots</li>
                         <li>Added back button to bonuscard page</li>
                         <li>Added loading indicator to search page</li>
-                    </ul>
-                    <Typography>19-04-2021</Typography>
-                    <ul>
-                        <li>Added search</li>
-                        <li>Fixed title bugs</li>
-                        <li>Added bottom app bar</li>
-                        <li>Fixed search bugs</li>
-                        <li>Updated navigation flow</li>
                     </ul>
                 </div>
             </AccordionDetails>
