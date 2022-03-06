@@ -61,7 +61,7 @@ interface SwipeableListItemProps {
     ListItemIconProps?: ListItemIconPropsTypes;
     ListItemProps?: ListItemPropsTypes;
     ListItemSecondaryActionProps?: ListItemSecondaryActionPropsTypes;
-    ListItemTextProps?: ListItemTextPropsTypes;
+    ListItemTextProps?: ListItemTextPropsTypes | false;
     onSwipedLeft: (event: React.TransitionEvent) => void;
     onSwipedRight: (event: React.TransitionEvent) => void;
     primaryText: string | ReactElement;
