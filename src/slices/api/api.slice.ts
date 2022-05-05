@@ -1,5 +1,3 @@
-// noinspection TypeScriptValidateJSTypes
-
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { Item } from "../../interfaces/item";
 import { SearchResultItem } from "../../pages/shoppingList/search";
@@ -8,11 +6,11 @@ import { AuthRequest, AuthResponse } from "../../interfaces/authRequest";
 import { RootState } from "../../app/store";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 
-export const shoppinglistApi = createApi({
-    reducerPath: "shoppinglistApi",
+export const shoppingListApi = createApi({
+    reducerPath: "shoppingListApi",
     tagTypes: ["items", "standardItems"],
     baseQuery: fetchBaseQuery({
-        baseUrl: "https://shoppinglist-backend.heidenis.com/api/v2/",
+        baseUrl: process.env.REACT_APP_API_URL,
         prepareHeaders: (headers, { getState }) => {
             // @ts-ignore
             const token = (getState() as RootState).persistedReducer.accessToken;
@@ -29,20 +27,22 @@ export const shoppinglistApi = createApi({
         }),
         getAllItems: builder.query<Item[], void>({
             query: () => `item/all`,
-            transformResponse: (response: Item[], meta, arg) =>
+            transformResponse: (response: Item[]) =>
                 [...response].sort((a: Item, b: Item) => {
                     return a.sequence - b.sequence;
                 }),
-            async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getState }) {
+            async onCacheEntryAdded(_arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getState }) {
                 try {
                     await cacheDataLoaded;
 
+                    //TODO: Create custom exception for this that we can check down below to rethrow
                     if (!process.env.REACT_APP_EVENTS_URL) throw new Error("Events url is not defined");
                     // @ts-ignore
                     const token = getState().persistedReducer.accessToken;
 
                     await fetchEventSource(process.env.REACT_APP_EVENTS_URL, {
                         onmessage(event) {
+                            //TODO: extract and refactor this to be less complex, use if-else / switch statements, and use enums for event names
                             const eventData = JSON.parse(event.data);
 
                             if (event.event === "item.create") {
@@ -50,6 +50,7 @@ export const shoppinglistApi = createApi({
                                     draft.push(eventData);
                                 });
                             }
+
                             if (event.event === "item.update") {
                                 updateCachedData((draft) => {
                                     const foundItem = draft.find((item) => item.id === eventData.id);
@@ -66,7 +67,7 @@ export const shoppinglistApi = createApi({
                                         const foundSequenceItem = eventData.find(
                                             (sequenceItem: { id: number; sequence: number }) => sequenceItem.id === item.id
                                         );
-                                        item.sequence = foundSequenceItem ? foundSequenceItem.sequence : item.sequence;
+                                        if (foundSequenceItem) item.sequence = foundSequenceItem.sequence;
                                     });
                                     draft.sort((a: Item, b: Item) => {
                                         return a.sequence - b.sequence;
@@ -90,7 +91,6 @@ export const shoppinglistApi = createApi({
                                     return draft.filter((item) => item.status === 1);
                                 });
                             }
-                            console.log(event);
                         },
                         headers: {
                             authorization: `Bearer ${token}`,
@@ -116,11 +116,11 @@ export const shoppinglistApi = createApi({
                 method: "POST",
                 body: item,
             }),
-            async onQueryStarted(patch, { dispatch, queryFulfilled }) {
+            async onQueryStarted(_patch, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
                     dispatch(
-                        shoppinglistApi.util.updateQueryData("getAllItems", undefined, (draft) => {
+                        shoppingListApi.util.updateQueryData("getAllItems", undefined, (draft) => {
                             draft.push(data);
                         })
                     );
@@ -135,7 +135,7 @@ export const shoppinglistApi = createApi({
             }),
             onQueryStarted(item, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
-                    shoppinglistApi.util.updateQueryData("getAllItems", undefined, (draft) => {
+                    shoppingListApi.util.updateQueryData("getAllItems", undefined, (draft) => {
                         const foundItem = draft.find((draftItem) => draftItem.id === item.id);
                         if (foundItem) {
                             Object.assign(foundItem, item);
@@ -152,7 +152,7 @@ export const shoppinglistApi = createApi({
             }),
             onQueryStarted(id, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
-                    shoppinglistApi.util.updateQueryData("getAllItems", undefined, (draft) => {
+                    shoppingListApi.util.updateQueryData("getAllItems", undefined, (draft) => {
                         const itemIndex = draft.findIndex((item) => item.id === id);
                         if (itemIndex === -1) return;
                         draft.splice(itemIndex, 1);
@@ -166,11 +166,11 @@ export const shoppinglistApi = createApi({
                 url: `item/all`,
                 method: "DELETE",
             }),
-            async onQueryStarted(patch, { dispatch, queryFulfilled }) {
+            async onQueryStarted(_patch, { dispatch, queryFulfilled }) {
                 try {
                     await queryFulfilled;
                     dispatch(
-                        shoppinglistApi.util.updateQueryData("getAllItems", undefined, (draft) => {
+                        shoppingListApi.util.updateQueryData("getAllItems", undefined, () => {
                             return [];
                         })
                     );
@@ -182,11 +182,11 @@ export const shoppinglistApi = createApi({
                 url: `item/checked`,
                 method: "DELETE",
             }),
-            async onQueryStarted(patch, { dispatch, queryFulfilled }) {
+            async onQueryStarted(_patch, { dispatch, queryFulfilled }) {
                 try {
                     await queryFulfilled;
                     dispatch(
-                        shoppinglistApi.util.updateQueryData("getAllItems", undefined, (draft) => {
+                        shoppingListApi.util.updateQueryData("getAllItems", undefined, (draft) => {
                             return draft.filter((item) => item.status === 1);
                         })
                     );
@@ -204,7 +204,7 @@ export const shoppinglistApi = createApi({
             }),
             onQueryStarted(sequences, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
-                    shoppinglistApi.util.updateQueryData("getAllItems", undefined, (draft) => {
+                    shoppingListApi.util.updateQueryData("getAllItems", undefined, (draft) => {
                         draft.forEach((item) => {
                             const foundSequenceItem = sequences.find((sequenceItem) => sequenceItem.id === item.id);
                             item.sequence = foundSequenceItem ? foundSequenceItem.sequence : item.sequence;
@@ -224,7 +224,7 @@ export const shoppinglistApi = createApi({
             }),
             onQueryStarted(id, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
-                    shoppinglistApi.util.updateQueryData("getAllItems", undefined, (draft) => {
+                    shoppingListApi.util.updateQueryData("getAllItems", undefined, (draft) => {
                         const foundItem = draft.find((item) => item.id === id);
                         if (!foundItem) return;
                         foundItem.status = 2;
@@ -240,7 +240,7 @@ export const shoppinglistApi = createApi({
             }),
             onQueryStarted(id, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
-                    shoppinglistApi.util.updateQueryData("getAllItems", undefined, (draft) => {
+                    shoppingListApi.util.updateQueryData("getAllItems", undefined, (draft) => {
                         const foundItem = draft.find((item) => item.id === id);
                         if (!foundItem) return;
                         foundItem.status = 1;
@@ -255,11 +255,11 @@ export const shoppinglistApi = createApi({
                 method: "POST",
                 body: standardItem,
             }),
-            async onQueryStarted(patch, { dispatch, queryFulfilled }) {
+            async onQueryStarted(_patch, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
                     dispatch(
-                        shoppinglistApi.util.updateQueryData("getAllStandardItems", undefined, (draft) => {
+                        shoppingListApi.util.updateQueryData("getAllStandardItems", undefined, (draft) => {
                             draft.push(data);
                         })
                     );
@@ -280,7 +280,7 @@ export const shoppinglistApi = createApi({
             }),
             onQueryStarted(id, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
-                    shoppinglistApi.util.updateQueryData("getAllStandardItems", undefined, (draft) => {
+                    shoppingListApi.util.updateQueryData("getAllStandardItems", undefined, (draft) => {
                         const standardItemIndex = draft.findIndex((standardItem) => standardItem.id === id);
                         if (standardItemIndex === -1) return;
                         draft.splice(standardItemIndex, 1);
@@ -294,11 +294,11 @@ export const shoppinglistApi = createApi({
                 url: `standardItem/all`,
                 method: "DELETE",
             }),
-            async onQueryStarted(patch, { dispatch, queryFulfilled }) {
+            async onQueryStarted(_patch, { dispatch, queryFulfilled }) {
                 try {
                     await queryFulfilled;
                     dispatch(
-                        shoppinglistApi.util.updateQueryData("getAllStandardItems", undefined, (draft) => {
+                        shoppingListApi.util.updateQueryData("getAllStandardItems", undefined, () => {
                             return [];
                         })
                     );
@@ -334,4 +334,4 @@ export const {
     useDeleteStandardItemMutation,
     useDeleteAllStandardItemsMutation,
     useLoginMutation,
-} = shoppinglistApi;
+} = shoppingListApi;

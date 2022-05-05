@@ -3,7 +3,7 @@ import { NavBar } from "../components/navbar/NavBar";
 import { Route, Router } from "react-router-dom";
 import BonusCard from "../pages/bonus/bonus";
 import Settings from "../pages/settings/settings";
-import LoginForm from "../pages/login/LoginForm";
+import { LoginPage } from "../pages/login/LoginPage";
 import { ShoppingList } from "../pages/shoppingList/shoppingList";
 import React, { useState } from "react";
 
@@ -29,7 +29,7 @@ export const Routes = () => {
                 <Settings />
             </Route>
             <Route path="/login">
-                <LoginForm />
+                <LoginPage />
             </Route>
             <Route exact path="/">
                 <ShoppingList setIsOnItemList={setIsOnItemList} />

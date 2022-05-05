@@ -44,7 +44,7 @@ export const useStyles = makeStyles(() =>
  * Returns a swipe-able item which shows the current item name, amount, and a link icon if a link is present on the item object.
  * Allows the user to swipe right, marking it as done (or undone if status is already done).
  * Allows the user to swipe left, deleting the item.
- * These changes are immediately sent to the server through {@link shoppinglistApi RTK Query}
+ * These changes are immediately sent to the server through {@link shoppingListApi RTK Query}
  *
  * @param item - The item shown in this list item.
  * @param isDisabled - Whether this list item is currently being dragged. This prop disables the swiping on the item.
