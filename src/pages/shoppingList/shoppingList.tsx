@@ -3,7 +3,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import ListIcon from "@material-ui/icons/List";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
-import Search from "./search";
+import { Search } from "./search";
 import ItemList from "./itemList";
 import { StandardItemList } from "./defaultItemList/StandardItemList";
 import { NavbarContext } from "../../contexts/NavbarContext";
@@ -17,6 +17,9 @@ interface ShoppingListProps {
     setIsOnItemList: (newValue: boolean) => void;
 }
 
+/**
+ * Styles for the {@link ShoppingList} functional component.
+ */
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         bottomNavigation: {
@@ -33,6 +36,9 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
+/**
+ * Styles for the {@link BottomNavigationAction} component.
+ */
 const useStylesForBottomNav = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -44,7 +50,7 @@ const useStylesForBottomNav = makeStyles((theme: Theme) =>
     })
 );
 
-export function ShoppingList({ setIsOnItemList }: ShoppingListProps) {
+export const ShoppingList = ({ setIsOnItemList }: ShoppingListProps) => {
     const classes = useStyles();
     const styleForBottomNav = useStylesForBottomNav();
     const [bottomNavValue, setBottomNavValue] = useState(1);
@@ -96,4 +102,4 @@ export function ShoppingList({ setIsOnItemList }: ShoppingListProps) {
             </BottomNavContext.Provider>
         </div>
     );
-}
+};

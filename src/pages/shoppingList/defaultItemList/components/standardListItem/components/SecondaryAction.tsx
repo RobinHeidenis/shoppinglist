@@ -18,7 +18,7 @@ interface SecondaryActionProps {
  *
  * If the item has an url, the component shows a {@link UrlIconButton link icon button}
  *
- * On click the button adds the standard item to the shopping list through {@link shoppinglistApi RTK Query}
+ * On click the button adds the standard item to the shopping list through {@link shoppingListApi RTK Query}
  * and changes the icon shown to a {@link CheckIcon}
  * @param item
  * @constructor
@@ -27,6 +27,11 @@ export const SecondaryAction = ({ item }: SecondaryActionProps) => {
     const [addItem] = useAddItemMutation();
     const [checked, setChecked] = useState(false);
 
+    /**
+     * Creates a new item, based on the {@link item} prop passed to the component. </br>
+     * Then submits the item using {@link shoppingListApi RTK Query} </br>
+     * Afterwards it sets the checked boolean to true, changing the icon to a {@link CheckIcon Check} icon
+     */
     const addItemToList = () => {
         const newItem: Partial<UnsubmittedItem> = {
             name: item.name,

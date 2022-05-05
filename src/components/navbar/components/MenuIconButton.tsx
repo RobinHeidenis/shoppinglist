@@ -1,7 +1,6 @@
 import { IconButton } from "@material-ui/core";
-import React from "react";
+import React, { ReactNode } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { MenuIconButtonProps } from "../../../interfaces/MenuIconButtonProps";
 
 /**
  * Styles
@@ -14,8 +13,15 @@ const useStyles = makeStyles((theme: Theme) =>
         menuButton: {
             marginRight: theme.spacing(2),
         },
-    })
+    }),
 );
+
+export interface MenuIconButtonProps {
+    children: ReactNode;
+    label: string;
+    onClick: (event: React.MouseEvent) => void;
+    end?: boolean;
+}
 
 /**
  * Functional Component.

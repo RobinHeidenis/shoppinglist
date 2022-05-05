@@ -2,6 +2,9 @@ import { Typography } from "@material-ui/core";
 import React from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 
+/**
+ * Styles for the {@link NoStandardItems} functional component.
+ */
 const useStyles = makeStyles(() =>
     createStyles({
         typographyDiv: {
@@ -12,6 +15,12 @@ const useStyles = makeStyles(() =>
     })
 );
 
+/**
+ * Functional Component <br/>
+ *
+ * Shows a message specifying that there are no standard items yet.
+ * @constructor
+ */
 export const NoStandardItems = () => {
     const classes = useStyles();
 

@@ -10,7 +10,7 @@ import { useDeleteAllItemsMutation, useDeleteCheckedMutation } from "../../../sl
  * Shows a "more options" button, which when clicked opens a menu.
  * This menu allows the user to delete all/checked items. <br/>
  *
- * Uses {@link shoppinglistApi RTK Query} to update the backend.
+ * Uses {@link shoppingListApi RTK Query} to update the backend.
  * @constructor
  */
 export const MenuMoreOptionsButton = () => {
@@ -22,7 +22,7 @@ export const MenuMoreOptionsButton = () => {
      * The onClick handler for the "delete all items" option.
      * Closes the menu and updates the backend. <br/>
      *
-     * Uses {@link shoppinglistApi RTK Query} to update the backend.
+     * Uses {@link shoppingListApi RTK Query} to update the backend.
      */
     const handleDeleteAllItems = () => {
         setAnchorEl(null);
@@ -33,7 +33,7 @@ export const MenuMoreOptionsButton = () => {
      * The onClick handler for the "delete checked items" option.
      * Closes the menu and updates the backend. <br/>
      *
-     * Uses {@link shoppinglistApi RTK Query} to update the backend.
+     * Uses {@link shoppingListApi RTK Query} to update the backend.
      */
     const handleDeleteCheckedItems = () => {
         setAnchorEl(null);

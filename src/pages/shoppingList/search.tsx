@@ -1,5 +1,5 @@
 import SearchBar from "material-ui-search-bar";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Card, CardContent, IconButton, Typography } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import CheckIcon from "@material-ui/icons/Check";
@@ -23,6 +23,9 @@ export interface SearchResultItem {
     checked: boolean;
 }
 
+/**
+ * Styles for the {@link Search} functional component.
+ */
 const useStyles = makeStyles(() =>
     createStyles({
         SearchBarWrapper: {
@@ -63,7 +66,7 @@ const useStyles = makeStyles(() =>
     })
 );
 
-export default function Search() {
+export const Search = () => {
     const classes = useStyles();
     const [items, setItems] = useState([] as SearchResultItem[]);
     const [executeQuery, setExecuteQuery] = useState(false);
@@ -137,4 +140,4 @@ export default function Search() {
             </div>
         </div>
     );
-}
+};
