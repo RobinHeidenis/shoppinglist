@@ -7,18 +7,22 @@ export const ThemeContext = React.createContext({
     currentTheme: "darkTheme",
 });
 
+// I'd destructure props into just children
 const ThemeProvider: React.FC = (props) => {
+    // currentThemName would be better - be explicit
     const curThemeName = localStorage.getItem("appTheme") || "darkTheme";
 
+    // Crazy comment v
     // State to hold the selected theme name
     const [themeName, _setThemeName] = useState(curThemeName);
 
+    // Don't re-use var names
     const setThemeName = (themeName: string): void => {
         localStorage.setItem("appTheme", themeName);
         _setThemeName(themeName);
     };
 
-    // Retrieve the theme object by theme name
+    // Retrieve the theme object by theme name <-- wowie
     const theme = getThemeByName(themeName);
 
     return (

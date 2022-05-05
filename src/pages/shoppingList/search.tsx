@@ -25,7 +25,7 @@ export interface SearchResultItem {
 
 const useStyles = makeStyles(() =>
     createStyles({
-        SearchBarDiv: {
+        SearchBarWrapper: {
             display: "flex",
             justifyContent: "center",
             position: "fixed",
@@ -75,21 +75,20 @@ export default function Search() {
     const { data, isLoading } = useSearchQuery(executeQuery ? searchValue : skipToken);
 
     function handleClick(item: SearchResultItem) {
-        if (isEditing) {
-            setEditingItem({
-                id: editingItem.id,
-                name: `${item.name} ${item.price.unitSize}`,
-                quantity: "",
-                url: item.url,
-                checked: editingItem.checked,
-                status: editingItem.status,
-                sequence: editingItem.sequence,
-            });
-            setIsEditDialogOpen(true);
-            setBottomNavValue(1);
+        const itemName = `${item.name} ${item.price.unitSize}`;
+        if (!isEditing) {
+            addItem({ name: itemName, url: item.url });
             return;
         }
-        addItem({ name: `${item.name} ${item.price.unitSize}`, url: item.url });
+
+        setEditingItem({
+            ...editingItem,
+            name: itemName,
+            quantity: "",
+            url: item.url,
+        });
+        setIsEditDialogOpen(true);
+        setBottomNavValue(1);
     }
 
     useEffect(() => {
@@ -100,10 +99,10 @@ export default function Search() {
 
     return (
         <div>
-            <div className={classes.SearchBarDiv}>
+            <div className={classes.SearchBarWrapper}>
                 <SearchBar
                     value={searchValue}
-                    onChange={(newValue) => setSearchValue(newValue)}
+                    onChange={setSearchValue}
                     onRequestSearch={() => setExecuteQuery(true)}
                     className={classes.SearchBar}
                 />

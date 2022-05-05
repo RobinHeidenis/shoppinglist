@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es5", // it's 2022
     "lib": [
       "es6",
       "dom",
@@ -22,7 +22,8 @@
     "jsx": "react-jsx",
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "noImplicitReturns": true,
   },
   "include": [
     "src"

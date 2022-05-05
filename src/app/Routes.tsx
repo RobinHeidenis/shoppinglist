@@ -17,6 +17,7 @@ import React, { useState } from "react";
  * @constructor
  */
 export const Routes = () => {
+    // missing return type - my name is ESLint btw
     const [isOnItemList, setIsOnItemList] = useState(false);
 
     return (

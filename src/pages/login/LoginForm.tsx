@@ -56,6 +56,7 @@ export default function LoginForm() {
                 <form
                     className={classes.form}
                     noValidate
+                    // extract this handler to a func
                     onSubmit={async (event) => {
                         event.preventDefault();
                         try {

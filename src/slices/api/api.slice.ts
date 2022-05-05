@@ -8,11 +8,17 @@ import { AuthRequest, AuthResponse } from "../../interfaces/authRequest";
 import { RootState } from "../../app/store";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 
+// here you go bud see if it works
+type PartialWithId<T extends { id: unknown }> = Partial<T> & Pick<T, "id">;
+
+// is there any way to split this bad boy up into multiple slices? I know this one thing I used had
+// multiple slices for each domain/type or whatever
+// camelcase -> shoppingListApi
 export const shoppinglistApi = createApi({
     reducerPath: "shoppinglistApi",
     tagTypes: ["items", "standardItems"],
     baseQuery: fetchBaseQuery({
-        baseUrl: "https://shoppinglist-backend.heidenis.com/api/v2/",
+        baseUrl: process.env.REACT_APP_API_URL,
         prepareHeaders: (headers, { getState }) => {
             // @ts-ignore
             const token = (getState() as RootState).persistedReducer.accessToken;
@@ -37,6 +43,7 @@ export const shoppinglistApi = createApi({
                 try {
                     await cacheDataLoaded;
 
+                    // why throw if the caught exception is ignored
                     if (!process.env.REACT_APP_EVENTS_URL) throw new Error("Events url is not defined");
                     // @ts-ignore
                     const token = getState().persistedReducer.accessToken;
@@ -45,11 +52,13 @@ export const shoppinglistApi = createApi({
                         onmessage(event) {
                             const eventData = JSON.parse(event.data);
 
+                            // enum/const for the event names?
                             if (event.event === "item.create") {
                                 updateCachedData((draft) => {
                                     draft.push(eventData);
                                 });
                             }
+                            // else-if or return so that not every if clause is checked after one has been handled
                             if (event.event === "item.update") {
                                 updateCachedData((draft) => {
                                     const foundItem = draft.find((item) => item.id === eventData.id);
@@ -66,7 +75,12 @@ export const shoppinglistApi = createApi({
                                         const foundSequenceItem = eventData.find(
                                             (sequenceItem: { id: number; sequence: number }) => sequenceItem.id === item.id
                                         );
-                                        item.sequence = foundSequenceItem ? foundSequenceItem.sequence : item.sequence;
+                                        // NEW 2 below
+                                        if (foundSequenceItem) {
+                                            item.sequence = foundSequenceItem.sequence;
+                                        }
+                                        // ORIGINAL: item.sequence = foundSequenceItem ? foundSequenceItem.sequence : item.sequence;
+                                        // NEW 1: item.sequence = foundSequenceItem?.sequence ?? item.sequence;
                                     });
                                     draft.sort((a: Item, b: Item) => {
                                         return a.sequence - b.sequence;
@@ -90,7 +104,7 @@ export const shoppinglistApi = createApi({
                                     return draft.filter((item) => item.status === 1);
                                 });
                             }
-                            console.log(event);
+                            console.log(event); // LOG
                         },
                         headers: {
                             authorization: `Bearer ${token}`,

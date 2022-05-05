@@ -39,7 +39,7 @@ export default function DragDropList({ openEditDialog }: DragDropListProps) {
 
     if (isLoading) return <LoadingList />;
 
-    if (!data || data.length === 0)
+    if (!data?.length)
         return (
             <div className={classes.emptyShoppingListDiv}>
                 <EmptyCartSVG className={classes.svg} />
