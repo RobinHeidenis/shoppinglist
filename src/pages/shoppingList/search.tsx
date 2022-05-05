@@ -1,5 +1,5 @@
 import SearchBar from "material-ui-search-bar";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Card, CardContent, IconButton, Typography } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import CheckIcon from "@material-ui/icons/Check";
@@ -23,9 +23,12 @@ export interface SearchResultItem {
     checked: boolean;
 }
 
+/**
+ * Styles for the {@link Search} functional component.
+ */
 const useStyles = makeStyles(() =>
     createStyles({
-        SearchBarDiv: {
+        SearchBarWrapper: {
             display: "flex",
             justifyContent: "center",
             position: "fixed",
@@ -63,7 +66,7 @@ const useStyles = makeStyles(() =>
     })
 );
 
-export default function Search() {
+export const Search = () => {
     const classes = useStyles();
     const [items, setItems] = useState([] as SearchResultItem[]);
     const [executeQuery, setExecuteQuery] = useState(false);
@@ -75,21 +78,20 @@ export default function Search() {
     const { data, isLoading } = useSearchQuery(executeQuery ? searchValue : skipToken);
 
     function handleClick(item: SearchResultItem) {
-        if (isEditing) {
-            setEditingItem({
-                id: editingItem.id,
-                name: `${item.name} ${item.price.unitSize}`,
-                quantity: "",
-                url: item.url,
-                checked: editingItem.checked,
-                status: editingItem.status,
-                sequence: editingItem.sequence,
-            });
-            setIsEditDialogOpen(true);
-            setBottomNavValue(1);
+        const itemName = `${item.name} ${item.price.unitSize}`;
+        if (!isEditing) {
+            addItem({ name: itemName, url: item.url });
             return;
         }
-        addItem({ name: `${item.name} ${item.price.unitSize}`, url: item.url });
+
+        setEditingItem({
+            ...editingItem,
+            name: itemName,
+            quantity: "",
+            url: item.url,
+        });
+        setIsEditDialogOpen(true);
+        setBottomNavValue(1);
     }
 
     useEffect(() => {
@@ -100,10 +102,10 @@ export default function Search() {
 
     return (
         <div>
-            <div className={classes.SearchBarDiv}>
+            <div className={classes.SearchBarWrapper}>
                 <SearchBar
                     value={searchValue}
-                    onChange={(newValue) => setSearchValue(newValue)}
+                    onChange={setSearchValue}
                     onRequestSearch={() => setExecuteQuery(true)}
                     className={classes.SearchBar}
                 />
@@ -138,4 +140,4 @@ export default function Search() {
             </div>
         </div>
     );
-}
+};

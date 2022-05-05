@@ -1,3 +1,4 @@
+// pascalcase
 export enum status {
     open = 1,
     closed = 2,

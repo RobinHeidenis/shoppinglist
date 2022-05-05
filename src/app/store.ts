@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { shoppinglistApi } from "../slices/api/api.slice";
+import { shoppingListApi } from "../slices/api/api.slice";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { authSlice } from "../slices/auth/auth.slice";
 import { rtkQueryErrorLogger } from "./middleware/error.middleware";
@@ -11,14 +11,14 @@ const persistConfig = {
     key: "auth",
     version: 1,
     storage,
-    blacklist: [shoppinglistApi.reducerPath],
+    blacklist: [shoppingListApi.reducerPath],
 };
 
 const persistedReducer = persistReducer(persistConfig, authSlice.reducer);
 
 export const store = configureStore({
     reducer: {
-        [shoppinglistApi.reducerPath]: shoppinglistApi.reducer,
+        [shoppingListApi.reducerPath]: shoppingListApi.reducer,
         persistedReducer,
     },
     middleware: (getDefaultMiddleware) =>
@@ -26,12 +26,12 @@ export const store = configureStore({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
-        }).concat(shoppinglistApi.middleware, rtkQueryErrorLogger),
+        }).concat(shoppingListApi.middleware, rtkQueryErrorLogger),
 });
 
 setupListeners(store.dispatch);
 
-export let persistor = persistStore(store);
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 

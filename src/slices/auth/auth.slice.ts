@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+// why type not interface
 type AuthState = {
     accessToken: string | null;
     refreshToken: string | null;

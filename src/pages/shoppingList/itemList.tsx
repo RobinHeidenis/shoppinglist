@@ -4,7 +4,7 @@ import { Item } from "../../interfaces/item";
 import AddItemModal from "./components/AddItemModal";
 import EditItemModal from "./components/EditItemModal";
 import React, { useContext, useEffect, useState } from "react";
-import DragDropList from "./components/DragDropList";
+import { DragDropList } from "./components/DragDropList/DragDropList";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { EditContext } from "../../contexts/EditContext";
 import { useUpdateItemMutation } from "../../slices/api/api.slice";
