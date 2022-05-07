@@ -9,7 +9,7 @@ export const BonusCard = (): JSX.Element => {
     useEffect(() => {
         setTitle("Bonuscard");
         setHasBackButton(true);
-        return () => {
+        return (): void => {
             setHasBackButton(false);
         };
     }, [setTitle, setHasBackButton]);

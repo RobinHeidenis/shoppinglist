@@ -51,7 +51,7 @@ export const ItemList = ({ setIsOnItemList }: ItemListProps): JSX.Element => {
     useEffect(() => {
         setIsOnItemList(true);
 
-        return () => {
+        return (): void => {
             setIsOnItemList(false);
         };
     }, [setIsOnItemList]);
