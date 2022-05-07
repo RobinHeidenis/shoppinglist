@@ -10,4 +10,6 @@ import { MenuLink } from "../../../ui/MenuLink";
  *
  * @constructor
  */
-export const SettingsLink = () => <MenuLink listKey={"Settings"} location={"/settings"} icon={<SettingsIcon />} text={"Settings"} />;
+export const SettingsLink = (): JSX.Element => (
+    <MenuLink listKey="Settings" location="/settings" icon={<SettingsIcon />} text="Settings" />
+);

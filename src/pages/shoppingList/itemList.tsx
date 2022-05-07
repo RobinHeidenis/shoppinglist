@@ -1,11 +1,11 @@
 import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import { Item } from "../../interfaces/item";
-import AddItemModal from "./components/AddItemModal";
-import EditItemModal from "./components/EditItemModal";
 import React, { useContext, useEffect, useState } from "react";
-import { DragDropList } from "./components/DragDropList/DragDropList";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { Item } from "../../interfaces/item";
+import { AddItemModal } from "./components/AddItemModal";
+import { EditItemModal } from "./components/EditItemModal";
+import { DragDropList } from "./components/DragDropList/DragDropList";
 import { EditContext } from "../../contexts/EditContext";
 import { useUpdateItemMutation } from "../../slices/api/api.slice";
 import { MODAL_TYPE_ITEM } from "../../interfaces/modalType";
@@ -19,10 +19,10 @@ const useStyles = makeStyles(() =>
         paddingBottom: {
             paddingBottom: 56,
         },
-    })
+    }),
 );
 
-export default function ItemList({ setIsOnItemList }: ItemListProps) {
+export const ItemList = ({ setIsOnItemList }: ItemListProps): JSX.Element => {
     const classes = useStyles();
     const [SnackbarOpen, setSnackbarOpen] = useState(false);
     const { setEditingItem, setIsEditDialogOpen } = useContext(EditContext);
@@ -33,17 +33,17 @@ export default function ItemList({ setIsOnItemList }: ItemListProps) {
             setSnackbarOpen(true);
             return false;
         }
-        updateItem(item);
+        void updateItem(item);
         return true;
     };
 
-    const openEditDialog = (item: Item) => {
+    const openEditDialog = (item: Item): void => {
         if (item.status === 2) return;
         setIsEditDialogOpen(true);
         setEditingItem(item);
     };
 
-    const handleSnackbarClose = (event?: React.SyntheticEvent, reason?: string) => {
+    const handleSnackbarClose = (event?: React.SyntheticEvent, reason?: string): void => {
         if (reason === "clickaway") return;
         setSnackbarOpen(false);
     };
@@ -54,18 +54,18 @@ export default function ItemList({ setIsOnItemList }: ItemListProps) {
         return () => {
             setIsOnItemList(false);
         };
-    }, []);
+    }, [setIsOnItemList]);
 
     return (
         <div>
-            {/*TODO: export this component to ServerErrorBar or create new system to show errors*/}
+            {/* TODO: export this component to ServerErrorBar or create new system to show errors */}
             <Snackbar
                 open={SnackbarOpen}
                 autoHideDuration={6000}
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 onClose={handleSnackbarClose}
             >
-                <Alert onClose={handleSnackbarClose} variant={"filled"} severity="warning">
+                <Alert onClose={handleSnackbarClose} variant="filled" severity="warning">
                     Something went wrong sending the item to the server.
                 </Alert>
             </Snackbar>
@@ -76,4 +76,4 @@ export default function ItemList({ setIsOnItemList }: ItemListProps) {
             <EditItemModal editItemFunction={editItem} />
         </div>
     );
-}
+};

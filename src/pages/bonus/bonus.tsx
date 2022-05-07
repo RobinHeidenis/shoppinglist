@@ -1,9 +1,9 @@
-import { useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Box } from "@material-ui/core";
 import { NavbarContext } from "../../contexts/NavbarContext";
 import { BonusCardSVG } from "./components/BonusCardSVG";
 
-export default function BonusCard() {
+export const BonusCard = (): JSX.Element => {
     const { setTitle, setHasBackButton } = useContext(NavbarContext);
 
     useEffect(() => {
@@ -12,11 +12,11 @@ export default function BonusCard() {
         return () => {
             setHasBackButton(false);
         };
-    }, []);
+    }, [setTitle, setHasBackButton]);
 
     return (
-        <Box display={"flex"} flexDirection={"row"} justifyContent={"center"} marginTop={"10px"}>
+        <Box display="flex" flexDirection="row" justifyContent="center" marginTop="10px">
             <BonusCardSVG />
         </Box>
     );
-}
+};

@@ -1,9 +1,9 @@
+import { Toolbar } from "@material-ui/core";
+import React, { useContext } from "react";
 import { MenuButtons } from "./MenuButtons";
 import { MenuTitle } from "./MenuTitle";
 import { MenuBonusCardButton } from "./MenuBonusCardButton";
 import { MenuMoreOptionsButton } from "./MenuMoreOptionsButton";
-import { Toolbar } from "@material-ui/core";
-import React, { useContext } from "react";
 import { NavbarContext } from "../../../contexts/NavbarContext";
 
 interface NavBarElementsProps {
@@ -22,7 +22,7 @@ interface NavBarElementsProps {
  *
  * @param isOnItemList - True if the currently selected page is the item list.
  */
-export const NavBarElements = ({ isOnItemList }: NavBarElementsProps) => {
+export const NavBarElements = ({ isOnItemList }: NavBarElementsProps): JSX.Element => {
     const { hasBackButton } = useContext(NavbarContext);
 
     return (

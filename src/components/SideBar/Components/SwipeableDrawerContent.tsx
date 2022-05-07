@@ -1,7 +1,7 @@
-import { ShoppingListLink } from "./ListItems/ShoppingListLink";
-import { SettingsLink } from "./ListItems/SettingsLink";
 import List from "@material-ui/core/List";
 import React from "react";
+import { ShoppingListLink } from "./ListItems/ShoppingListLink";
+import { SettingsLink } from "./ListItems/SettingsLink";
 
 /**
  * Functional Component. <br/>
@@ -10,7 +10,7 @@ import React from "react";
  *
  * @constructor
  */
-export const SwipeableDrawerContent = () => (
+export const SwipeableDrawerContent = (): JSX.Element => (
     <List>
         <ShoppingListLink />
         <SettingsLink />

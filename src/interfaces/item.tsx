@@ -1,5 +1,4 @@
-// pascalcase
-export enum status {
+export enum Status {
     open = 1,
     closed = 2,
 }
@@ -10,7 +9,7 @@ export interface Item {
     quantity: string;
     url: string;
     checked?: boolean;
-    status: status;
+    status: Status;
     sequence: number;
     categoryId?: number;
 }
@@ -20,4 +19,4 @@ export interface SequenceItem {
     sequence: number;
 }
 
-export type UnsubmittedItem = Omit<Item, "id" | "status" | "sequence">;
+export type UnsubmittedItem = Omit<Item, "id" | "sequence" | "status">;

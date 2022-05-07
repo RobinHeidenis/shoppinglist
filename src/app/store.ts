@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { shoppingListApi } from "../slices/api/api.slice";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { authSlice } from "../slices/auth/auth.slice";
-import { rtkQueryErrorLogger } from "./middleware/error.middleware";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from "redux-persist/es/constants";
+import { rtkQueryErrorLogger } from "./middleware/error.middleware";
+import { authSlice } from "../slices/auth/auth.slice";
+import { shoppingListApi } from "../slices/api/api.slice";
 
 const persistConfig = {
     key: "auth",

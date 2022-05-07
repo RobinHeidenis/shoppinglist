@@ -1,10 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-import { Item } from "../../interfaces/item";
-import { SearchResultItem } from "../../pages/shoppingList/search";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { Item, SequenceItem } from "../../interfaces/item";
 import { StandardItem } from "../../interfaces/standardItem";
 import { AuthRequest, AuthResponse } from "../../interfaces/authRequest";
-import { RootState } from "../../app/store";
-import { fetchEventSource } from "@microsoft/fetch-event-source";
+import type { RootState } from "../../app/store";
+import { SearchResultItem } from "../../interfaces/SearchResultItem";
+
+// We need this because Redux specifically requires void as arg type, which is normally invalid.
+/* eslint-disable @typescript-eslint/no-invalid-void-type */
 
 export const shoppingListApi = createApi({
     reducerPath: "shoppingListApi",
@@ -12,7 +15,6 @@ export const shoppingListApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: process.env.REACT_APP_API_URL,
         prepareHeaders: (headers, { getState }) => {
-            // @ts-ignore
             const token = (getState() as RootState).persistedReducer.accessToken;
             if (token) {
                 headers.set("authorization", `Bearer ${token}`);
@@ -27,69 +29,60 @@ export const shoppingListApi = createApi({
         }),
         getAllItems: builder.query<Item[], void>({
             query: () => `item/all`,
-            transformResponse: (response: Item[]) =>
-                [...response].sort((a: Item, b: Item) => {
-                    return a.sequence - b.sequence;
-                }),
-            async onCacheEntryAdded(_arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getState }) {
+            transformResponse: (response: Item[]) => [...response].sort((a: Item, b: Item) => a.sequence - b.sequence),
+            async onCacheEntryAdded(_arg, { updateCachedData, cacheDataLoaded, getState }) {
                 try {
                     await cacheDataLoaded;
 
-                    //TODO: Create custom exception for this that we can check down below to rethrow
+                    // TODO: Create custom exception for this that we can check down below to rethrow
                     if (!process.env.REACT_APP_EVENTS_URL) throw new Error("Events url is not defined");
-                    // @ts-ignore
-                    const token = getState().persistedReducer.accessToken;
+                    const token = (getState() as unknown as RootState).persistedReducer.accessToken as string;
 
                     await fetchEventSource(process.env.REACT_APP_EVENTS_URL, {
                         onmessage(event) {
-                            //TODO: extract and refactor this to be less complex, use if-else / switch statements, and use enums for event names
-                            const eventData = JSON.parse(event.data);
+                            // TODO: extract and refactor this to be less complex, use if-else / switch statements, and use enums for event names. Also disconnect the event source on cacheEntryRemoved
+                            const eventData = JSON.parse(event.data) as Item | SequenceItem[] | StandardItem | number;
 
                             if (event.event === "item.create") {
                                 updateCachedData((draft) => {
-                                    draft.push(eventData);
+                                    draft.push(eventData as Item);
                                 });
                             }
 
                             if (event.event === "item.update") {
                                 updateCachedData((draft) => {
-                                    const foundItem = draft.find((item) => item.id === eventData.id);
+                                    const foundItem = draft.find((item) => item.id === (eventData as Item).id);
                                     if (foundItem) {
                                         Object.assign(foundItem, eventData);
                                     } else {
-                                        draft.push(eventData);
+                                        draft.push(eventData as Item);
                                     }
                                 });
                             }
                             if (event.event === "item.updateSequences") {
                                 updateCachedData((draft) => {
-                                    draft.forEach((item) => {
-                                        const foundSequenceItem = eventData.find(
-                                            (sequenceItem: { id: number; sequence: number }) => sequenceItem.id === item.id
+                                    draft.forEach((item: Item) => {
+                                        const foundSequenceItem = (eventData as SequenceItem[]).find(
+                                            (sequenceItem) => sequenceItem.id === item.id,
                                         );
+                                        // eslint-disable-next-line no-param-reassign
                                         if (foundSequenceItem) item.sequence = foundSequenceItem.sequence;
                                     });
-                                    draft.sort((a: Item, b: Item) => {
-                                        return a.sequence - b.sequence;
-                                    });
+                                    draft.sort((a: Item, b: Item) => a.sequence - b.sequence);
                                 });
                             }
                             if (event.event === "item.delete") {
                                 updateCachedData((draft) => {
-                                    const foundIndex = draft.findIndex((item) => item.id === eventData);
+                                    const foundIndex = draft.findIndex((item: Item) => item.id === (eventData as number));
                                     if (foundIndex === -1) return;
                                     draft.splice(foundIndex, 1);
                                 });
                             }
                             if (event.event === "item.deleteAll") {
-                                updateCachedData(() => {
-                                    return [];
-                                });
+                                updateCachedData(() => []);
                             }
                             if (event.event === "item.deleteChecked") {
-                                updateCachedData((draft) => {
-                                    return draft.filter((item) => item.status === 1);
-                                });
+                                updateCachedData((draft) => draft.filter((item) => item.status === 1));
                             }
                         },
                         headers: {
@@ -97,7 +90,9 @@ export const shoppingListApi = createApi({
                         },
                         credentials: "include",
                     });
-                } catch (e) {}
+                } catch (e) {
+                    // Do nothing for now, in the future add a check if it is a unset variable error and rethrow
+                }
             },
             providesTags: ["items"],
         }),
@@ -122,9 +117,11 @@ export const shoppingListApi = createApi({
                     dispatch(
                         shoppingListApi.util.updateQueryData("getAllItems", undefined, (draft) => {
                             draft.push(data);
-                        })
+                        }),
                     );
-                } catch {}
+                } catch {
+                    // We don't want to do anything here. Redux takes care of it.
+                }
             },
         }),
         updateItem: builder.mutation<Item, Partial<Item> & Pick<Item, "id">>({
@@ -140,7 +137,7 @@ export const shoppingListApi = createApi({
                         if (foundItem) {
                             Object.assign(foundItem, item);
                         }
-                    })
+                    }),
                 );
                 queryFulfilled.catch(patchResult.undo);
             },
@@ -156,7 +153,7 @@ export const shoppingListApi = createApi({
                         const itemIndex = draft.findIndex((item) => item.id === id);
                         if (itemIndex === -1) return;
                         draft.splice(itemIndex, 1);
-                    })
+                    }),
                 );
                 queryFulfilled.catch(patchResult.undo);
             },
@@ -169,12 +166,10 @@ export const shoppingListApi = createApi({
             async onQueryStarted(_patch, { dispatch, queryFulfilled }) {
                 try {
                     await queryFulfilled;
-                    dispatch(
-                        shoppingListApi.util.updateQueryData("getAllItems", undefined, () => {
-                            return [];
-                        })
-                    );
-                } catch {}
+                    dispatch(shoppingListApi.util.updateQueryData("getAllItems", undefined, () => []));
+                } catch {
+                    // We don't want to do anything here. Redux takes care of it.
+                }
             },
         }),
         deleteChecked: builder.mutation<void, void>({
@@ -186,11 +181,11 @@ export const shoppingListApi = createApi({
                 try {
                     await queryFulfilled;
                     dispatch(
-                        shoppingListApi.util.updateQueryData("getAllItems", undefined, (draft) => {
-                            return draft.filter((item) => item.status === 1);
-                        })
+                        shoppingListApi.util.updateQueryData("getAllItems", undefined, (draft) => draft.filter((item) => item.status === 1)),
                     );
-                } catch {}
+                } catch {
+                    // We don't want to do anything here. Redux takes care of it.
+                }
             },
         }),
         updateSequences: builder.mutation<
@@ -207,12 +202,11 @@ export const shoppingListApi = createApi({
                     shoppingListApi.util.updateQueryData("getAllItems", undefined, (draft) => {
                         draft.forEach((item) => {
                             const foundSequenceItem = sequences.find((sequenceItem) => sequenceItem.id === item.id);
+                            // eslint-disable-next-line no-param-reassign
                             item.sequence = foundSequenceItem ? foundSequenceItem.sequence : item.sequence;
                         });
-                        draft.sort((a: Item, b: Item) => {
-                            return a.sequence - b.sequence;
-                        });
-                    })
+                        draft.sort((a: Item, b: Item) => a.sequence - b.sequence);
+                    }),
                 );
                 queryFulfilled.catch(patchResult.undo);
             },
@@ -228,7 +222,7 @@ export const shoppingListApi = createApi({
                         const foundItem = draft.find((item) => item.id === id);
                         if (!foundItem) return;
                         foundItem.status = 2;
-                    })
+                    }),
                 );
                 queryFulfilled.catch(patchResult.undo);
             },
@@ -244,7 +238,7 @@ export const shoppingListApi = createApi({
                         const foundItem = draft.find((item) => item.id === id);
                         if (!foundItem) return;
                         foundItem.status = 1;
-                    })
+                    }),
                 );
                 queryFulfilled.catch(patchResult.undo);
             },
@@ -261,9 +255,11 @@ export const shoppingListApi = createApi({
                     dispatch(
                         shoppingListApi.util.updateQueryData("getAllStandardItems", undefined, (draft) => {
                             draft.push(data);
-                        })
+                        }),
                     );
-                } catch {}
+                } catch {
+                    // We don't want to do anything here. Redux takes care of it.
+                }
             },
         }),
         updateStandardItem: builder.mutation<StandardItem, Partial<StandardItem> & Pick<StandardItem, "id">>({
@@ -284,7 +280,7 @@ export const shoppingListApi = createApi({
                         const standardItemIndex = draft.findIndex((standardItem) => standardItem.id === id);
                         if (standardItemIndex === -1) return;
                         draft.splice(standardItemIndex, 1);
-                    })
+                    }),
                 );
                 queryFulfilled.catch(patchResult.undo);
             },
@@ -297,12 +293,10 @@ export const shoppingListApi = createApi({
             async onQueryStarted(_patch, { dispatch, queryFulfilled }) {
                 try {
                     await queryFulfilled;
-                    dispatch(
-                        shoppingListApi.util.updateQueryData("getAllStandardItems", undefined, () => {
-                            return [];
-                        })
-                    );
-                } catch {}
+                    dispatch(shoppingListApi.util.updateQueryData("getAllStandardItems", undefined, () => []));
+                } catch {
+                    // We don't want to do anything here. Redux takes care of it.
+                }
             },
         }),
         login: builder.mutation<AuthResponse, AuthRequest>({

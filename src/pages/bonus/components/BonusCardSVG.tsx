@@ -1,4 +1,4 @@
-import { FC, SVGProps } from "react";
+import React, { FC, SVGProps } from "react";
 import { makeStyles } from "@material-ui/core";
 import { createStyles } from "@material-ui/core/styles";
 
@@ -12,7 +12,7 @@ const useStyles = makeStyles(() =>
         fill: {
             fill: "#000000",
         },
-    })
+    }),
 );
 
 const Text: FC<SVGProps<SVGTextElement>> = ({ children, ...props }) => (
@@ -21,7 +21,7 @@ const Text: FC<SVGProps<SVGTextElement>> = ({ children, ...props }) => (
     </text>
 );
 
-export function BonusCardSVG() {
+export const BonusCardSVG = (): JSX.Element => {
     const classes = useStyles();
 
     return (
@@ -82,4 +82,4 @@ export function BonusCardSVG() {
             </g>
         </svg>
     );
-}
+};

@@ -1,11 +1,12 @@
+import React, { useState } from "react";
+import { Route, Router } from "react-router-dom";
 import history from "../components/lib/history";
 import { NavBar } from "../components/navbar/NavBar";
-import { Route, Router } from "react-router-dom";
-import BonusCard from "../pages/bonus/bonus";
-import Settings from "../pages/settings/settings";
+import { BonusCard } from "../pages/bonus/bonus";
+import { Settings } from "../pages/settings/settings";
 import { LoginPage } from "../pages/login/LoginPage";
 import { ShoppingList } from "../pages/shoppingList/shoppingList";
-import React, { useState } from "react";
+import { PrivateRoute } from "./PrivateRoute";
 
 /**
  * Functional Component.<br/>
@@ -16,7 +17,7 @@ import React, { useState } from "react";
  * Uses {@link Router} from `react-router-dom`
  * @constructor
  */
-export const Routes = () => {
+export const Routes = (): JSX.Element => {
     const [isOnItemList, setIsOnItemList] = useState(false);
 
     return (
@@ -31,9 +32,9 @@ export const Routes = () => {
             <Route path="/login">
                 <LoginPage />
             </Route>
-            <Route exact path="/">
+            <PrivateRoute path="/" exact>
                 <ShoppingList setIsOnItemList={setIsOnItemList} />
-            </Route>
+            </PrivateRoute>
         </Router>
     );
 };

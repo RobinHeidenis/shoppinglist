@@ -11,17 +11,28 @@ interface ConfirmationModelProps {
     id: number;
 }
 
-export default function ConfirmationModal({ isOpen, callback, setIsOpen, id }: ConfirmationModelProps) {
+export const ConfirmationModal = ({ isOpen, callback, setIsOpen, id }: ConfirmationModelProps): JSX.Element => {
     const handleSubmit = (): void => {
         setIsOpen(false);
         callback(id);
     };
 
     return (
-        <Dialog open={isOpen} onClose={() => setIsOpen(false)} aria-labelledby="form-dialog-title">
+        <Dialog
+            open={isOpen}
+            onClose={(): void => {
+                setIsOpen(false);
+            }}
+            aria-labelledby="form-dialog-title"
+        >
             <DialogTitle id="form-dialog-title">Delete item?</DialogTitle>
             <DialogActions>
-                <Button onClick={() => setIsOpen(false)} color="secondary">
+                <Button
+                    onClick={(): void => {
+                        setIsOpen(false);
+                    }}
+                    color="secondary"
+                >
                     Cancel
                 </Button>
                 <Button onClick={handleSubmit} color="secondary">
@@ -30,4 +41,4 @@ export default function ConfirmationModal({ isOpen, callback, setIsOpen, id }: C
             </DialogActions>
         </Dialog>
     );
-}
+};

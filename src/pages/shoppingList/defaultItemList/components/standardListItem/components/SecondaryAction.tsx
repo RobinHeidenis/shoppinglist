@@ -23,7 +23,7 @@ interface SecondaryActionProps {
  * @param item
  * @constructor
  */
-export const SecondaryAction = ({ item }: SecondaryActionProps) => {
+export const SecondaryAction = ({ item }: SecondaryActionProps): JSX.Element => {
     const [addItem] = useAddItemMutation();
     const [checked, setChecked] = useState(false);
 
@@ -32,14 +32,14 @@ export const SecondaryAction = ({ item }: SecondaryActionProps) => {
      * Then submits the item using {@link shoppingListApi RTK Query} </br>
      * Afterwards it sets the checked boolean to true, changing the icon to a {@link CheckIcon Check} icon
      */
-    const addItemToList = () => {
+    const addItemToList = (): void => {
         const newItem: Partial<UnsubmittedItem> = {
             name: item.name,
             categoryId: 1,
             quantity: item.quantity ?? undefined,
             url: item.url ?? undefined,
         };
-        addItem(newItem).then(() => setChecked(true));
+        void addItem(newItem).then(() => { setChecked(true); });
     };
 
     return (

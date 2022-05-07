@@ -18,9 +18,9 @@ interface DeleteIconButtonProps {
  * @param itemId - The ID of the item to be passed to the modal
  * @constructor
  */
-export const DeleteIconButton = ({ openDeleteConfirmation, itemId }: DeleteIconButtonProps) => (
+export const DeleteIconButton = ({ openDeleteConfirmation, itemId }: DeleteIconButtonProps): JSX.Element => (
     <ListItemIcon>
-        <IconButton onClick={() => openDeleteConfirmation(itemId)}>
+        <IconButton onClick={(): void => { openDeleteConfirmation(itemId); }}>
             <DeleteIcon />
         </IconButton>
     </ListItemIcon>

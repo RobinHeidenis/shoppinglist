@@ -1,6 +1,6 @@
-import { StandardListItem } from "./standardListItem/StandardListItem";
 import { Divider } from "@material-ui/core";
 import React from "react";
+import { StandardListItem } from "./standardListItem/StandardListItem";
 import { StandardItem } from "../../../../interfaces/standardItem";
 
 interface StandardListItemComponentProps {

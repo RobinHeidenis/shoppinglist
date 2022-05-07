@@ -1,7 +1,7 @@
-import { MenuIconButton } from "./MenuIconButton";
 import { MoreVert } from "@material-ui/icons";
 import { Menu, MenuItem } from "@material-ui/core";
 import React, { useState } from "react";
+import { MenuIconButton } from "./MenuIconButton";
 import { useDeleteAllItemsMutation, useDeleteCheckedMutation } from "../../../slices/api/api.slice";
 
 /**
@@ -13,10 +13,10 @@ import { useDeleteAllItemsMutation, useDeleteCheckedMutation } from "../../../sl
  * Uses {@link shoppingListApi RTK Query} to update the backend.
  * @constructor
  */
-export const MenuMoreOptionsButton = () => {
+export const MenuMoreOptionsButton = (): JSX.Element => {
     const [deleteAllItems] = useDeleteAllItemsMutation();
     const [deleteCheckedItems] = useDeleteCheckedMutation();
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
     /**
      * The onClick handler for the "delete all items" option.
@@ -24,9 +24,9 @@ export const MenuMoreOptionsButton = () => {
      *
      * Uses {@link shoppingListApi RTK Query} to update the backend.
      */
-    const handleDeleteAllItems = () => {
+    const handleDeleteAllItems = (): void => {
         setAnchorEl(null);
-        deleteAllItems();
+        void deleteAllItems();
     };
 
     /**
@@ -35,17 +35,31 @@ export const MenuMoreOptionsButton = () => {
      *
      * Uses {@link shoppingListApi RTK Query} to update the backend.
      */
-    const handleDeleteCheckedItems = () => {
+    const handleDeleteCheckedItems = (): void => {
         setAnchorEl(null);
-        deleteCheckedItems();
+        void deleteCheckedItems();
     };
 
     return (
         <div>
-            <MenuIconButton end label={"menu button"} onClick={(e) => setAnchorEl(e.currentTarget as HTMLElement)}>
+            <MenuIconButton
+                end
+                label="menu button"
+                onClick={(e): void => {
+                    setAnchorEl(e.currentTarget as HTMLElement);
+                }}
+            >
                 <MoreVert />
             </MenuIconButton>
-            <Menu id="itemMenu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
+            <Menu
+                id="itemMenu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={(): void => {
+                    setAnchorEl(null);
+                }}
+            >
                 <MenuItem onClick={handleDeleteCheckedItems}>Remove checked items</MenuItem>
                 <MenuItem onClick={handleDeleteAllItems}>Remove all items</MenuItem>
             </Menu>

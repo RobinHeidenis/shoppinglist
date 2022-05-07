@@ -14,11 +14,19 @@ import { SideBarContext } from "../../contexts/SideBarContext";
  *
  * @constructor
  */
-export const SideBar = () => {
+export const SideBar = (): JSX.Element => {
     const { isDrawerOpen, setIsDrawerOpen } = useContext(SideBarContext);
 
     return (
-        <SwipeableDrawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} onOpen={() => setIsDrawerOpen(true)}>
+        <SwipeableDrawer
+            open={isDrawerOpen}
+            onClose={(): void => {
+                setIsDrawerOpen(false);
+            }}
+            onOpen={(): void => {
+                setIsDrawerOpen(true);
+            }}
+        >
             <SwipeableDrawerContent />
         </SwipeableDrawer>
     );
