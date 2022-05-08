@@ -1,6 +1,7 @@
-import React, { FC, SVGProps } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core";
 import { createStyles } from "@material-ui/core/styles";
+import { Text } from "./Text";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -13,12 +14,6 @@ const useStyles = makeStyles(() =>
             fill: "#000000",
         },
     }),
-);
-
-const Text: FC<SVGProps<SVGTextElement>> = ({ children, ...props }) => (
-    <text {...props} style={{ font: "20px monospace" }}>
-        {children}
-    </text>
 );
 
 export const BonusCardSVG = (): JSX.Element => {
