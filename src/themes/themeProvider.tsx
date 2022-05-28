@@ -8,7 +8,9 @@ interface ThemeContextDefaultValues {
 }
 
 export const ThemeContext = React.createContext<ThemeContextDefaultValues>({
-    setThemeName: (): void => {},
+    setThemeName: (): void => {
+        // Initial function does nothing, but has to adhere to the typing
+    },
     currentTheme: "darkTheme",
 });
 
