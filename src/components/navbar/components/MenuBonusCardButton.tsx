@@ -1,7 +1,7 @@
-import { MenuIconButton } from "./MenuIconButton";
-import history from "../../lib/history";
 import { Redeem } from "@material-ui/icons";
 import React from "react";
+import { MenuIconButton } from "./MenuIconButton";
+import history from "../../lib/history";
 
 /**
  * Functional Component. <br/>
@@ -10,8 +10,14 @@ import React from "react";
  *
  * @constructor
  */
-export const MenuBonusCardButton = () => (
-    <MenuIconButton end label={"bonuscard button"} onClick={() => history.push("/bonuscard")}>
+export const MenuBonusCardButton = (): JSX.Element => (
+    <MenuIconButton
+        end
+        label="bonuscard button"
+        onClick={(): void => {
+            history.push("/bonuscard");
+        }}
+    >
         <Redeem />
     </MenuIconButton>
 );

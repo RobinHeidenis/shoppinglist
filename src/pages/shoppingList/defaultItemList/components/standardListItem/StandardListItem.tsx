@@ -15,7 +15,7 @@ const useStyles = makeStyles(() =>
         wordBreak: {
             wordBreak: "break-word",
         },
-    })
+    }),
 );
 
 /**

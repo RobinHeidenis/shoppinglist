@@ -12,7 +12,7 @@ const useStyles = makeStyles(() =>
             justifyContent: "center",
             marginTop: "10px",
         },
-    })
+    }),
 );
 
 /**
@@ -21,12 +21,12 @@ const useStyles = makeStyles(() =>
  * Shows a message specifying that there are no standard items yet.
  * @constructor
  */
-export const NoStandardItems = () => {
+export const NoStandardItems = (): JSX.Element => {
     const classes = useStyles();
 
     return (
         <div className={classes.typographyDiv}>
-            <Typography variant={"h5"}>No standard items yet</Typography>
+            <Typography variant="h5">No standard items yet</Typography>
         </div>
     );
 };

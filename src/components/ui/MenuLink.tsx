@@ -1,8 +1,8 @@
-import history from "../lib/history";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItem from "@material-ui/core/ListItem";
 import React, { useContext } from "react";
+import history from "../lib/history";
 import { SideBarContext } from "../../contexts/SideBarContext";
 
 interface MenuLinkProps {
@@ -24,14 +24,14 @@ interface MenuLinkProps {
  * @param text - The text displayed on the list item.<br/>
  * @constructor
  */
-export const MenuLink = ({ listKey, location, icon, text }: MenuLinkProps) => {
+export const MenuLink = ({ listKey, location, icon, text }: MenuLinkProps): JSX.Element => {
     const { setIsDrawerOpen } = useContext(SideBarContext);
 
     return (
         <ListItem
             button
             key={listKey}
-            onClick={() => {
+            onClick={(): void => {
                 history.push(location);
                 setIsDrawerOpen(false);
             }}

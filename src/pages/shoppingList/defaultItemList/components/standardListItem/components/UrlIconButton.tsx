@@ -15,10 +15,10 @@ interface UrlIconButtonProps {
  * @param url
  * @constructor
  */
-export const UrlIconButton = ({ url }: UrlIconButtonProps) => (
+export const UrlIconButton = ({ url }: UrlIconButtonProps): JSX.Element => (
     <IconButton
         aria-label="link to product on ah.nl"
-        onClick={(e) => {
+        onClick={(e): void => {
             e.stopPropagation();
             window.open(url);
         }}

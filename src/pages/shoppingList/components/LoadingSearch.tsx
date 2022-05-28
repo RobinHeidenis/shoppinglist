@@ -23,24 +23,24 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function LoadingSearch() {
+export const LoadingSearch = (): JSX.Element => {
     const classes = useStyles();
 
     return (
         <Card className={classes.card}>
             <CardContent className={classes.cardContent}>
-                <Skeleton variant={"rect"} className={classes.skeleton} width={"200px"} height={"200px"} />
-                <Typography variant={"h6"}>
+                <Skeleton variant="rect" className={classes.skeleton} width="200px" height="200px" />
+                <Typography variant="h6">
                     <Skeleton />
                 </Typography>
                 <div className={classes.typography}>
                     <div>
-                        <Skeleton width={"20px"} />
-                        <Skeleton width={"30px"} />
+                        <Skeleton width="20px" />
+                        <Skeleton width="30px" />
                     </div>
-                    <Skeleton width={"20px"} />
+                    <Skeleton width="20px" />
                 </div>
             </CardContent>
         </Card>
     );
-}
+};

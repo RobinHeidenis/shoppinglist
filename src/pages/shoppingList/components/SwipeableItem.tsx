@@ -1,10 +1,10 @@
-import { Item, status } from "../../../interfaces/item";
 import DoneIcon from "@material-ui/icons/Done";
 import UndoIcon from "@material-ui/icons/Undo";
 import DeleteIcon from "@material-ui/icons/Delete";
 import React from "react";
-import SwipeableListItem from "../../../components/lib/SwipeableListItem";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
+import SwipeableListItem from "../../../components/lib/SwipeableListItem";
+import { Item, Status } from "../../../interfaces/item";
 import { useCheckItemMutation, useDeleteItemMutation, useUncheckItemMutation } from "../../../slices/api/api.slice";
 import { ItemLinkIcon } from "./ItemLinkIcon";
 
@@ -35,7 +35,7 @@ export const useStyles = makeStyles(() =>
         itemNotDone: {
             opacity: "100%",
         },
-    })
+    }),
 );
 
 /**
@@ -51,15 +51,15 @@ export const useStyles = makeStyles(() =>
  * @param openEditDialog - A function to open the edit dialog with this item.
  * @constructor
  */
-export const SwipeableItem = ({ item, isDisabled, openEditDialog }: SwipeableListItemProps) => {
+export const SwipeableItem = ({ item, isDisabled, openEditDialog }: SwipeableListItemProps): JSX.Element => {
     const classes = useStyles();
     const [deleteItem] = useDeleteItemMutation();
     const [checkItem] = useCheckItemMutation();
     const [uncheckItem] = useUncheckItemMutation();
 
     const backgroundStyles = {
-        actionIconRight: item.status === status.open ? <DoneIcon /> : <UndoIcon />,
-        backgroundColorRight: item.status === status.open ? "#008000" : "orange",
+        actionIconRight: item.status === Status.open ? <DoneIcon /> : <UndoIcon />,
+        backgroundColorRight: item.status === Status.open ? "#008000" : "orange",
         actionIconLeft: <DeleteIcon />,
         backgroundColorLeft: "red",
     };
@@ -77,16 +77,21 @@ export const SwipeableItem = ({ item, isDisabled, openEditDialog }: SwipeableLis
         <SwipeableListItem
             key={item.id}
             disabled={isDisabled}
-            onClickEventHandler={() => {
+            onClickEventHandler={(): void => {
                 openEditDialog(item);
             }}
             background={backgroundStyles}
-            onSwipedRight={() => (item.status === status.open ? checkItem(item.id) : uncheckItem(item.id))}
-            onSwipedLeft={() => item.id && deleteItem(item.id)}
+            onSwipedRight={(): void => {
+                if (item.status === Status.open) void checkItem(item.id);
+                else void uncheckItem(item.id);
+            }}
+            onSwipedLeft={(): void => {
+                if (item.id) void deleteItem(item.id);
+            }}
             primaryText={item.name}
             secondaryText={item.quantity}
             itemIcon={<ItemLinkIcon item={item} />}
-            ListItemTextProps={item.status === status.closed && listItemTextProps}
+            ListItemTextProps={item.status === Status.closed && listItemTextProps}
         />
     );
 };

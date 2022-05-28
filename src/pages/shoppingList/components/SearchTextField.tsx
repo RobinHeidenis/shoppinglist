@@ -13,31 +13,33 @@ interface TextFieldProps {
     fromEditing?: boolean;
 }
 
-export function SearchTextField({ value, setValue, maxLength, name, fromEditing }: TextFieldProps) {
+export const SearchTextField = ({ value, setValue, maxLength, name, fromEditing }: TextFieldProps): JSX.Element => {
     const { setBottomNavValue } = useContext(BottomNavContext);
     const { setSearchValue } = useContext(SearchContext);
     const { setIsEditing } = useContext(EditContext);
 
     return (
         <FormControl fullWidth>
-            <InputLabel htmlFor={"SearchTextField" + name} color={"secondary"}>
+            <InputLabel htmlFor={`SearchTextField${name}`} color="secondary">
                 {name}
             </InputLabel>
             <Input
-                id={"SearchTextField" + name}
+                id={`SearchTextField${name}`}
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
-                inputProps={{ maxLength: maxLength }}
-                type={"text"}
-                color={"secondary"}
-                autoComplete={"off"}
+                onChange={(e): void => {
+                    setValue(e.target.value);
+                }}
+                inputProps={{ maxLength }}
+                type="text"
+                color="secondary"
+                autoComplete="off"
                 fullWidth
                 autoFocus
                 endAdornment={
-                    <InputAdornment position={"end"}>
+                    <InputAdornment position="end">
                         <IconButton
-                            aria-label={"search for this item on ah.nl"}
-                            onClick={() => {
+                            aria-label="search for this item on ah.nl"
+                            onClick={(): void => {
                                 if (fromEditing) setIsEditing(true);
                                 setSearchValue(value);
                                 setBottomNavValue(2);
@@ -50,4 +52,4 @@ export function SearchTextField({ value, setValue, maxLength, name, fromEditing 
             />
         </FormControl>
     );
-}
+};

@@ -1,11 +1,11 @@
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import List from "@material-ui/core/List";
-import { Item } from "../../../../interfaces/item";
 import { Divider } from "@material-ui/core";
 import React, { useState } from "react";
+import { Item } from "../../../../interfaces/item";
 import { SwipeableItem } from "../SwipeableItem";
 import { useGetAllItemsQuery, useUpdateSequencesMutation } from "../../../../slices/api/api.slice";
-import LoadingList from "../LoadingList";
+import { LoadingList } from "../LoadingList";
 import { NoItems } from "./components/NoItems";
 
 interface DragDropListProps {
@@ -24,7 +24,7 @@ interface DragDropListProps {
  * @param openEditDialog
  * @constructor
  */
-export const DragDropList = ({ openEditDialog }: DragDropListProps) => {
+export const DragDropList = ({ openEditDialog }: DragDropListProps): JSX.Element => {
     const [isDisabled, setIsDisabled] = useState(false);
     const { data, isLoading } = useGetAllItemsQuery(undefined, { refetchOnMountOrArgChange: true });
     const [updateSequences] = useUpdateSequencesMutation();
@@ -39,7 +39,7 @@ export const DragDropList = ({ openEditDialog }: DragDropListProps) => {
      * Uses {@link shoppingListApi RTK Query} to update the sequences in the backend.
      * @param result
      */
-    const handleOnDragEnd = (result: DropResult) => {
+    const handleOnDragEnd = (result: DropResult): void => {
         setIsDisabled(false);
         if (!result.destination || result.destination.index === result.source.index) return;
 
@@ -53,22 +53,27 @@ export const DragDropList = ({ openEditDialog }: DragDropListProps) => {
             sequence: itemList.indexOf(item),
         }));
 
-        updateSequences(sequenceItems);
+        void updateSequences(sequenceItems);
     };
 
     return (
-        <DragDropContext onDragEnd={handleOnDragEnd} onDragStart={() => setIsDisabled(true)}>
-            <Droppable droppableId={"DroppableShoppingList"}>
-                {(provided) => (
+        <DragDropContext
+            onDragEnd={handleOnDragEnd}
+            onDragStart={(): void => {
+                setIsDisabled(true);
+            }}
+        >
+            <Droppable droppableId="DroppableShoppingList">
+                {(provided): JSX.Element => (
                     <List {...provided.droppableProps} ref={provided.innerRef}>
                         {data.map((item: Item, index) => (
-                            <Draggable key={item.id} draggableId={"draggableId-" + item.id} index={index}>
-                                {(draggableProvided) => (
+                            <Draggable key={item.id} draggableId={`draggableId-${item.id}`} index={index}>
+                                {(draggableProvided): JSX.Element => (
                                     <div
                                         ref={draggableProvided.innerRef}
                                         {...draggableProvided.draggableProps}
                                         {...draggableProvided.dragHandleProps}
-                                        key={"div" + item.id}
+                                        key={`div${item.id}`}
                                     >
                                         <SwipeableItem item={item} isDisabled={isDisabled} openEditDialog={openEditDialog} />
                                         <Divider />

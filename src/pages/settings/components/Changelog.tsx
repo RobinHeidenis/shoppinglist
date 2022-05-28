@@ -1,16 +1,17 @@
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
+import React from "react";
 
 const useStyles = makeStyles(() =>
     createStyles({
         marginTop10: {
             marginTop: 10,
         },
-    })
+    }),
 );
 
-export function Changelog() {
+export const Changelog = (): JSX.Element => {
     const classes = useStyles();
 
     return (
@@ -51,4 +52,4 @@ export function Changelog() {
             </AccordionDetails>
         </Accordion>
     );
-}
+};

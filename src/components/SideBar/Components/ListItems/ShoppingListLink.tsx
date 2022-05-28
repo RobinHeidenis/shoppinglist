@@ -10,4 +10,4 @@ import { MenuLink } from "../../../ui/MenuLink";
  *
  * @constructor
  */
-export const ShoppingListLink = () => <MenuLink listKey={"List"} location={"/"} icon={<ListIcon />} text={"Shopping list"} />;
+export const ShoppingListLink = (): JSX.Element => <MenuLink listKey="List" location="/" icon={<ListIcon />} text="Shopping list" />;

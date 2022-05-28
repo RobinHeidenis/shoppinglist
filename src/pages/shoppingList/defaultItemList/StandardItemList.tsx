@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import List from "@material-ui/core/List";
-import AddItemModal from "../components/AddItemModal";
-import LoadingList from "../components/LoadingList";
-import ConfirmationModal from "../components/ConfirmationModal";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { AddItemModal } from "../components/AddItemModal";
+import { LoadingList } from "../components/LoadingList";
+import { ConfirmationModal } from "../components/ConfirmationModal";
 import { useDeleteStandardItemMutation, useGetAllStandardItemsQuery } from "../../../slices/api/api.slice";
 import { StandardItem } from "../../../interfaces/standardItem";
 import { MODAL_TYPE_STANDARD_ITEM } from "../../../interfaces/modalType";
@@ -23,7 +23,7 @@ const useStyles = makeStyles(() =>
             justifyContent: "center",
             marginTop: "10px",
         },
-    })
+    }),
 );
 
 /**
@@ -51,7 +51,7 @@ export const StandardItemList = (): JSX.Element => {
      * This opens the {@link ConfirmationModal Delete Confirmation Modal}
      * @param id
      */
-    const openDeleteConfirmation = (id: number) => {
+    const openDeleteConfirmation = (id: number): void => {
         setItemId(id);
         setIsOpen(true);
     };
@@ -70,6 +70,8 @@ export const StandardItemList = (): JSX.Element => {
                 )}
             </List>
             <AddItemModal useHideOnScroll modalType={MODAL_TYPE_STANDARD_ITEM} />
+            {/* We don't control the type of deleteItem, so we have to use promises */}
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <ConfirmationModal isOpen={confirmationModalIsOpen} callback={deleteItem} setIsOpen={setIsOpen} id={itemId} />
         </div>
     );

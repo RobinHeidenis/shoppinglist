@@ -1,7 +1,7 @@
 import { Typography } from "@material-ui/core";
 import React, { useContext } from "react";
-import { NavbarContext } from "../../../contexts/NavbarContext";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { NavbarContext } from "../../../contexts/NavbarContext";
 
 /**
  * Styles
@@ -13,7 +13,7 @@ const useStyles = makeStyles(() =>
         title: {
             flexGrow: 1,
         },
-    })
+    }),
 );
 
 /**
@@ -23,7 +23,7 @@ const useStyles = makeStyles(() =>
  * Has the flexGrow property, to allow it to grow to the maximum possible space in the nav bar.
  * @constructor
  */
-export const MenuTitle = () => {
+export const MenuTitle = (): JSX.Element => {
     const classes = useStyles();
     const { title } = useContext(NavbarContext);
 

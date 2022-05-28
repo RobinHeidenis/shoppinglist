@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// why type not interface
-type AuthState = {
+interface AuthState {
     accessToken: string | null;
     refreshToken: string | null;
-};
+}
+
+/* eslint-disable no-param-reassign */
 
 export const authSlice = createSlice({
     name: "auth",
@@ -12,7 +13,7 @@ export const authSlice = createSlice({
     reducers: {
         setCredentials: (
             state,
-            { payload: { accessToken, refreshToken } }: PayloadAction<{ accessToken: string; refreshToken: string }>
+            { payload: { accessToken, refreshToken } }: PayloadAction<{ accessToken: string; refreshToken: string }>,
         ) => {
             state.accessToken = accessToken;
             state.refreshToken = refreshToken;

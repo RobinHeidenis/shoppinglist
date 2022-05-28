@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
  * Uses the {@link NavbarContext} to change the header title to "Login".
  * @constructor
  */
-export const LoginPage = () => {
+export const LoginPage = (): JSX.Element => {
     const classes = useStyles();
     const { setTitle } = useContext(NavbarContext);
 
@@ -40,7 +40,7 @@ export const LoginPage = () => {
      */
     useEffect(() => {
         setTitle("login");
-    }, []);
+    }, [setTitle]);
 
     return (
         <Container component="main" maxWidth="xs">

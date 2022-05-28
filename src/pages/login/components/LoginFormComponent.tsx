@@ -1,11 +1,11 @@
-import { setCredentials } from "../../../slices/auth/auth.slice";
-import history from "../../../components/lib/history";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import React, { FormEvent, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { Redirect, useLocation } from "react-router-dom";
+import { setCredentials } from "../../../slices/auth/auth.slice";
 import { useLoginMutation } from "../../../slices/api/api.slice";
 import { useAppDispatch } from "../../../hooks/redux";
-import { makeStyles } from "@material-ui/core/styles";
 
 /**
  * Styles for the {@link LoginFormComponent} functional component
@@ -27,32 +27,38 @@ const useStyles = makeStyles((theme) => ({
  * Includes a function for submitting the form using {@link shoppingListApi RTK Query}.
  * @constructor
  */
-export const LoginFormComponent = () => {
+export const LoginFormComponent = (): JSX.Element => {
     const [login] = useLoginMutation();
     const dispatch = useAppDispatch();
     const classes = useStyles();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [redirectToReferrer, setRedirectToReferrer] = useState(false);
+    const { state } = useLocation();
 
     /**
      * Submits the form to the backend using {@link shoppingListApi RTK Query}. <br/>
      * If a successful response is received, adds the tokens to the persisted Redux slice and returns to the home page.
      * @param event
      */
-    const submit = async (event: FormEvent) => {
+    const submit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
         try {
             const tokens = await login({ username, password }).unwrap();
             dispatch(setCredentials(tokens));
-            history.push("/");
+            setRedirectToReferrer(true);
         } catch (e) {
-            //TODO: add toast notification here
+            // TODO: add toast notification here
             console.error(e);
         }
     };
 
+    if (redirectToReferrer) return <Redirect to={(state as { from?: string | undefined } | undefined)?.from || "/"} />;
+
     return (
-        <form className={classes.form} noValidate onSubmit={submit}>
+        // We have to use a promise, as we do not have control over the login function above.
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        <form className={classes.form} noValidate onSubmit={async (event): Promise<void> => submit(event)}>
             <TextField
                 required
                 fullWidth
@@ -62,9 +68,11 @@ export const LoginFormComponent = () => {
                 label="Username"
                 name="username"
                 autoComplete="off"
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e): void => {
+                    setUsername(e.target.value);
+                }}
                 value={username}
-                color={"secondary"}
+                color="secondary"
             />
 
             <TextField
@@ -77,8 +85,10 @@ export const LoginFormComponent = () => {
                 type="password"
                 autoComplete="current-password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                color={"secondary"}
+                onChange={(e): void => {
+                    setPassword(e.target.value);
+                }}
+                color="secondary"
             />
             <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                 Sign In
