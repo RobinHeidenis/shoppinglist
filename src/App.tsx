@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { CssBaseline } from "@material-ui/core";
 import { NavbarContext } from "./contexts/NavbarContext";
 import { Routes } from "./app/Routes";
@@ -15,10 +15,20 @@ const App = (): JSX.Element => {
     const [hasBackButton, setHasBackButton] = useState(false);
     const [title, setTitle] = useState("");
 
+    const navBarContextValues = useMemo(
+        () => ({
+            title,
+            setTitle,
+            hasBackButton,
+            setHasBackButton,
+        }),
+        [title, setTitle, hasBackButton, setHasBackButton],
+    );
+
     return (
         <div>
             <CssBaseline />
-            <NavbarContext.Provider value={{ title, setTitle, hasBackButton, setHasBackButton }}>
+            <NavbarContext.Provider value={navBarContextValues}>
                 <Routes />
             </NavbarContext.Provider>
         </div>

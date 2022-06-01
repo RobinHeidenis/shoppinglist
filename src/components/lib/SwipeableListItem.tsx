@@ -64,9 +64,9 @@ interface SwipeableListItemProps {
     ListItemTextProps?: ListItemTextPropsTypes | false;
     onSwipedLeft: (event: React.TransitionEvent) => void;
     onSwipedRight: (event: React.TransitionEvent) => void;
-    primaryText: string | ReactElement;
+    primaryText: ReactElement | string;
     secondaryAction?: ReactElement;
-    secondaryText?: string | ReactElement;
+    secondaryText?: ReactElement | string;
     threshold?: number;
     onClickEventHandler?: MouseEventHandler;
     disabled?: boolean;
@@ -204,6 +204,7 @@ const SwipeableListItem: FC<SwipeableListItemProps> = ({
 
     return (
         <div>
+            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus */}
             <div
                 className={wrapperClass}
                 data-testid="wrapper-list-item"
@@ -212,6 +213,7 @@ const SwipeableListItem: FC<SwipeableListItemProps> = ({
                     maxHeight: !disableDeleteAnimation ? wrapperMaxHeight : undefined,
                 }}
                 onClick={onClickEventHandler}
+                role="treeitem"
             >
                 <ListItem
                     className={backgroundClass}
@@ -228,10 +230,13 @@ const SwipeableListItem: FC<SwipeableListItemProps> = ({
                     {...restOfListItemProps} // eslint-disable-line react/jsx-props-no-spreading
                     className={[listItemClass, className].join(` `)}
                     data-testid="draggable-list-item"
+                    /* eslint-disable-next-line react/jsx-no-bind */
                     onTouchStart={onDragStartTouch}
+                    /* eslint-disable-next-line react/jsx-no-bind */
                     onTouchMove={onTouchMove}
+                    /* eslint-disable-next-line react/jsx-no-bind */
                     onTouchEnd={onDragEndTouch}
-                    // @ts-ignore
+                    // @ts-expect-error this is a library i have no idea
                     ref={listElementEl}
                     style={{
                         transform: `translateX(${diff}px)`,

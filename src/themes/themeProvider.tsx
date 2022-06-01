@@ -1,35 +1,45 @@
-import React, { useState } from "react";
+import React, { ReactNode, useCallback, useMemo, useState } from "react";
 import { MuiThemeProvider } from "@material-ui/core";
 import { getThemeByName } from "./themeSwitcher";
 
-export const ThemeContext = React.createContext({
-    setThemeName: (themeName: string): void => {},
+interface ThemeContextDefaultValues {
+    setThemeName: (newValue: string) => void;
+    currentTheme: string;
+}
+
+export const ThemeContext = React.createContext<ThemeContextDefaultValues>({
+    setThemeName: (): void => {
+        // Initial function does nothing, but has to adhere to the typing
+    },
     currentTheme: "darkTheme",
 });
 
-// I'd destructure props into just children
-const ThemeProvider: React.FC = (props) => {
-    // currentThemName would be better - be explicit
-    const curThemeName = localStorage.getItem("appTheme") || "darkTheme";
+export const ThemeProvider = ({ children }: { children: ReactNode }): JSX.Element => {
+    const currentThemeName = localStorage.getItem("appTheme") || "darkTheme";
 
-    // Crazy comment v
-    // State to hold the selected theme name
-    const [themeName, _setThemeName] = useState(curThemeName);
+    const [themeName, setStateThemeName] = useState(currentThemeName);
 
-    // Don't re-use var names
-    const setThemeName = (themeName: string): void => {
-        localStorage.setItem("appTheme", themeName);
-        _setThemeName(themeName);
-    };
+    const setThemeName = useCallback(
+        (theme: string): void => {
+            localStorage.setItem("appTheme", theme);
+            setStateThemeName(theme);
+        },
+        [setStateThemeName],
+    );
 
-    // Retrieve the theme object by theme name <-- wowie
     const theme = getThemeByName(themeName);
 
+    const themeContextProviderValues = useMemo(
+        () => ({
+            setThemeName,
+            currentTheme: currentThemeName,
+        }),
+        [setThemeName, currentThemeName],
+    );
+
     return (
-        <ThemeContext.Provider value={{ setThemeName: setThemeName, currentTheme: curThemeName }}>
-            <MuiThemeProvider theme={theme}>{props.children}</MuiThemeProvider>
+        <ThemeContext.Provider value={themeContextProviderValues}>
+            <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
         </ThemeContext.Provider>
     );
 };
-
-export default ThemeProvider;

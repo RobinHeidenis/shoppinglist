@@ -9,20 +9,18 @@ interface TextFieldProps {
     autofocus?: boolean;
 }
 
-export function TextField({ value, setValue, maxLength, name, autofocus }: TextFieldProps) {
-    return (
+export const TextField = ({ value, setValue, maxLength, name, autofocus }: TextFieldProps): JSX.Element => (
         <MUITextField
             margin="dense"
             id={name}
             label={name}
             type="text"
-            inputProps={{ maxLength: maxLength }}
+            inputProps={{ maxLength }}
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e): void => { setValue(e.target.value); }}
             fullWidth
             autoComplete="off"
-            color={"secondary"}
+            color="secondary"
             autoFocus={autofocus}
         />
     );
-}

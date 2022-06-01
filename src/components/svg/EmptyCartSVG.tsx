@@ -1,10 +1,11 @@
 import { useTheme } from "@material-ui/core";
+import React from "react";
 
 interface EmptyCartSVGProps {
     className: string;
 }
 
-export function EmptyCartSVG({ className }: EmptyCartSVGProps) {
+export const EmptyCartSVG = ({ className }: EmptyCartSVGProps): JSX.Element => {
     const theme = useTheme();
     return (
         <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384.35 385.1" className={className}>
@@ -228,4 +229,4 @@ export function EmptyCartSVG({ className }: EmptyCartSVGProps) {
             />
         </svg>
     );
-}
+};

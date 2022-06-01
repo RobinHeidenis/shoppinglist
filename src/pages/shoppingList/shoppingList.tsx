@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import SearchIcon from "@material-ui/icons/Search";
 import ListIcon from "@material-ui/icons/List";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { Search } from "./search";
-import ItemList from "./itemList";
+import { ItemList } from "./itemList";
 import { StandardItemList } from "./defaultItemList/StandardItemList";
 import { NavbarContext } from "../../contexts/NavbarContext";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { BottomNavContext } from "../../contexts/BottomNavContext";
 import { SearchContext } from "../../contexts/SearchContext";
 import { EditContext } from "../../contexts/EditContext";
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
         selected: {},
-    })
+    }),
 );
 
 /**
@@ -47,10 +47,10 @@ const useStylesForBottomNav = makeStyles((theme: Theme) =>
             },
         },
         selected: {},
-    })
+    }),
 );
 
-export const ShoppingList = ({ setIsOnItemList }: ShoppingListProps) => {
+export const ShoppingList = ({ setIsOnItemList }: ShoppingListProps): JSX.Element => {
     const classes = useStyles();
     const styleForBottomNav = useStylesForBottomNav();
     const [bottomNavValue, setBottomNavValue] = useState(1);
@@ -67,29 +67,46 @@ export const ShoppingList = ({ setIsOnItemList }: ShoppingListProps) => {
     });
     const { setTitle } = useContext(NavbarContext);
 
-    useEffect(() => setTitle("Shopping list"), []);
+    useEffect(() => {
+        setTitle("Shopping list");
+    }, [setTitle]);
+
+    const bottomNavContextValues = useMemo(
+        () => ({
+            bottomNavValue,
+            setBottomNavValue,
+        }),
+        [bottomNavValue, setBottomNavValue],
+    );
+
+    const searchContextValues = useMemo(() => ({ searchValue, setSearchValue }), [searchValue, setSearchValue]);
+
+    const editContextValues = useMemo(
+        () => ({
+            isEditing,
+            setIsEditing,
+            editingItem,
+            setEditingItem,
+            isEditDialogOpen,
+            setIsEditDialogOpen,
+        }),
+        [isEditing, setIsEditing, editingItem, setEditingItem, isEditDialogOpen, setIsEditDialogOpen],
+    );
 
     return (
         <div>
-            <BottomNavContext.Provider value={{ bottomNavValue, setBottomNavValue }}>
-                <SearchContext.Provider value={{ searchValue, setSearchValue }}>
-                    <EditContext.Provider
-                        value={{
-                            isEditing,
-                            setIsEditing,
-                            editingItem,
-                            setEditingItem,
-                            isEditDialogOpen,
-                            setIsEditDialogOpen,
-                        }}
-                    >
+            <BottomNavContext.Provider value={bottomNavContextValues}>
+                <SearchContext.Provider value={searchContextValues}>
+                    <EditContext.Provider value={editContextValues}>
                         {bottomNavValue === 2 && <Search />}
                         {bottomNavValue === 1 && <ItemList setIsOnItemList={setIsOnItemList} />}
                         {bottomNavValue === 0 && <StandardItemList />}
 
                         <BottomNavigation
                             value={bottomNavValue}
-                            onChange={(event, newValue) => setBottomNavValue(newValue)}
+                            onChange={(event, newValue): void => {
+                                setBottomNavValue(newValue as number);
+                            }}
                             showLabels
                             className={classes.bottomNavigation}
                         >

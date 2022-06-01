@@ -36,7 +36,7 @@ export interface MenuIconButtonProps {
  * @param end - Boolean that specifies if the button should position itself at the end of the container.
  * @constructor
  */
-export const MenuIconButton = ({ children, label, onClick, end }: MenuIconButtonProps) => {
+export const MenuIconButton = ({ children, label, onClick, end }: MenuIconButtonProps): JSX.Element => {
     const classes = useStyles();
 
     return (
