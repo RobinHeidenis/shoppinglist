@@ -58,8 +58,8 @@ const useStyles = makeStyles(() =>
 export const Search = (): JSX.Element => {
     const classes = useStyles();
     const [items, setItems] = useState([] as SearchResultItem[]);
-    const [executeQuery, setExecuteQuery] = useState(false);
     const { searchValue, setSearchValue } = useContext(SearchContext);
+    const [executeQuery, setExecuteQuery] = useState(Boolean(searchValue));
     const { isEditing, setEditingItem, editingItem, setIsEditDialogOpen } = useContext(EditContext);
     const { setBottomNavValue } = useContext(BottomNavContext);
     const [addItem] = useAddItemMutation();
