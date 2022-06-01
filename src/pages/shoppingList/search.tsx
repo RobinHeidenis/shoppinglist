@@ -66,10 +66,10 @@ export const Search = (): JSX.Element => {
 
     const { data, isLoading } = useSearchQuery(executeQuery ? searchValue : skipToken);
 
-    const handleClick = (item: SearchResultItem): void => {
+    const handleClick = async (item: SearchResultItem): Promise<void> => {
         const itemName = `${item.name} ${item.price.unitSize}`;
         if (!isEditing) {
-            void addItem({ name: itemName, url: item.url });
+            await addItem({ name: itemName, url: item.url, categoryId: 1 });
             return;
         }
 
@@ -124,7 +124,7 @@ export const Search = (): JSX.Element => {
                                     </div>
                                     <IconButton
                                         onClick={(): void => {
-                                            handleClick(item);
+                                            void handleClick(item);
                                         }}
                                     >
                                         {item.checked ? <CheckIcon /> : <AddIcon />}
