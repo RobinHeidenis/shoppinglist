@@ -49,7 +49,6 @@ export const LoginFormComponent = (): JSX.Element => {
             setRedirectToReferrer(true);
         } catch (e) {
             // TODO: add toast notification here
-            console.error(e);
         }
     };
 
