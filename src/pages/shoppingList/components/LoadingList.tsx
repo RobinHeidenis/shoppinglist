@@ -1,5 +1,4 @@
-import { Skeleton } from "@mui/lab";
-import { Divider, Typography } from "@mui/material";
+import { Divider, Skeleton, Typography } from "@mui/material";
 import React from "react";
 
 export const LoadingList = (): JSX.Element => (
