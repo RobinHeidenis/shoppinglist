@@ -1,6 +1,7 @@
-import { IconButton } from "@material-ui/core";
+import { IconButton } from "@mui/material";
 import React, { ReactNode } from "react";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { createStyles, makeStyles } from "@mui/styles";
+import { Theme } from "@mui/material/styles";
 
 /**
  * Styles
@@ -46,6 +47,7 @@ export const MenuIconButton = ({ children, label, onClick, end }: MenuIconButton
             color="inherit"
             aria-label={label}
             onClick={onClick}
+            size="large"
         >
             {children}
         </IconButton>

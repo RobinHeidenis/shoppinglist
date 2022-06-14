@@ -1,5 +1,5 @@
-import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
+import { createStyles, makeStyles } from "@mui/styles";
+import { Typography } from "@mui/material";
 import React from "react";
 import { EmptyCartSVG } from "../../../../../components/svg/EmptyCartSVG";
 

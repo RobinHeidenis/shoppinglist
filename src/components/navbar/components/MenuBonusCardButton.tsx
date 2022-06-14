@@ -1,4 +1,4 @@
-import { Redeem } from "@material-ui/icons";
+import { Redeem } from "@mui/icons-material";
 import React from "react";
 import { MenuIconButton } from "./MenuIconButton";
 import history from "../../lib/history";

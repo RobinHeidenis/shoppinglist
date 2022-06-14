@@ -1,4 +1,4 @@
-import SettingsIcon from "@material-ui/icons/Settings";
+import SettingsIcon from "@mui/icons-material/Settings";
 import React from "react";
 import { MenuLink } from "../../../ui/MenuLink";
 
@@ -10,6 +10,4 @@ import { MenuLink } from "../../../ui/MenuLink";
  *
  * @constructor
  */
-export const SettingsLink = (): JSX.Element => (
-    <MenuLink listKey="Settings" location="/settings" icon={<SettingsIcon />} text="Settings" />
-);
+export const SettingsLink = (): JSX.Element => <MenuLink listKey="Settings" location="/settings" icon={<SettingsIcon />} text="Settings" />;

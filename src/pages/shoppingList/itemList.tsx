@@ -1,7 +1,7 @@
-import { Snackbar } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import { Snackbar } from "@mui/material";
+import { Alert } from "@mui/lab";
 import React, { useContext, useEffect, useState } from "react";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles } from "@mui/styles";
 import { Item } from "../../interfaces/item";
 import { AddItemModal } from "./components/AddItemModal";
 import { EditItemModal } from "./components/EditItemModal";
@@ -43,7 +43,7 @@ export const ItemList = ({ setIsOnItemList }: ItemListProps): JSX.Element => {
         setEditingItem(item);
     };
 
-    const handleSnackbarClose = (event?: React.SyntheticEvent, reason?: string): void => {
+    const handleSnackbarClose = (event: Event | React.SyntheticEvent, reason?: string): void => {
         if (reason === "clickaway") return;
         setSnackbarOpen(false);
     };

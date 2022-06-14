@@ -1,7 +1,21 @@
 import React, { useMemo, useState } from "react";
-import { CssBaseline } from "@material-ui/core";
+import { createTheme, CssBaseline, PaletteMode, ThemeProvider, useMediaQuery } from "@mui/material";
 import { NavbarContext } from "./contexts/NavbarContext";
 import { Routes } from "./app/Routes";
+
+const getDesignTokens = (mode: PaletteMode): Record<string, unknown> => ({
+    palette: {
+        mode,
+        ...(mode === "dark" && {
+            primary: {
+                main: "#102A43",
+            },
+            secondary: {
+                main: "#aeee98",
+            },
+        }),
+    },
+});
 
 /**
  * Functional Component.<br/>
@@ -15,6 +29,10 @@ const App = (): JSX.Element => {
     const [hasBackButton, setHasBackButton] = useState(false);
     const [title, setTitle] = useState("");
 
+    const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+
+    const theme = React.useMemo(() => createTheme(getDesignTokens(prefersDarkMode ? "dark" : "light")), [prefersDarkMode]);
+
     const navBarContextValues = useMemo(
         () => ({
             title,
@@ -26,12 +44,12 @@ const App = (): JSX.Element => {
     );
 
     return (
-        <div>
+        <ThemeProvider theme={theme}>
             <CssBaseline />
             <NavbarContext.Provider value={navBarContextValues}>
                 <Routes />
             </NavbarContext.Provider>
-        </div>
+        </ThemeProvider>
     );
 };
 

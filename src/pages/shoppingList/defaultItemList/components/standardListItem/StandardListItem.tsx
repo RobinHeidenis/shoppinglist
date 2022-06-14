@@ -1,6 +1,6 @@
-import { ListItem, ListItemText } from "@material-ui/core";
+import { ListItem, ListItemText } from "@mui/material";
 import React from "react";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles } from "@mui/styles";
 import { StandardItem } from "../../../../../interfaces/standardItem";
 import { DeleteIconButton } from "./components/DeleteIconButton";
 import { SecondaryAction } from "./components/SecondaryAction";

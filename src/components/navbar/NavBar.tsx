@@ -1,4 +1,4 @@
-import { AppBar } from "@material-ui/core";
+import { AppBar } from "@mui/material";
 import React, { useContext, useMemo, useState } from "react";
 import { SideBar } from "../SideBar/SideBar";
 import { NavbarContext } from "../../contexts/NavbarContext";
@@ -33,7 +33,7 @@ export const NavBar = ({ isOnItemList }: NavBarProps): JSX.Element => {
 
     return (
         <SideBarContext.Provider value={navBarContextValues}>
-            <AppBar position="sticky">
+            <AppBar position="sticky" enableColorOnDark>
                 <NavBarElements isOnItemList={isOnItemList} />
             </AppBar>
             {!hasBackButton && <SideBar />}
