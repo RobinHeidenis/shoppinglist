@@ -41,10 +41,13 @@ export const Search = (): JSX.Element => {
         if (data) {
             setItems(data);
         }
+    }, [data]);
+
+    useEffect(() => {
         if (isSuccess || isError) {
             setDoSearch(false);
         }
-    }, [data, isSuccess, isError, setDoSearch]);
+    }, [isSuccess, isError, setDoSearch]);
 
     return (
         <div>
