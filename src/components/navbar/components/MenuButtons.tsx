@@ -1,5 +1,5 @@
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import MenuIcon from "@material-ui/icons/Menu";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import MenuIcon from "@mui/icons-material/Menu";
 import React, { useContext } from "react";
 import history from "../../lib/history";
 import { MenuIconButton } from "./MenuIconButton";

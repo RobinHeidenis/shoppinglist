@@ -1,5 +1,5 @@
 import React from "react";
-import MUITextField from "@material-ui/core/TextField";
+import { TextField as MUITextField } from "@mui/material";
 
 interface TextFieldProps {
     value: string;
@@ -10,17 +10,20 @@ interface TextFieldProps {
 }
 
 export const TextField = ({ value, setValue, maxLength, name, autofocus }: TextFieldProps): JSX.Element => (
-        <MUITextField
-            margin="dense"
-            id={name}
-            label={name}
-            type="text"
-            inputProps={{ maxLength }}
-            value={value}
-            onChange={(e): void => { setValue(e.target.value); }}
-            fullWidth
-            autoComplete="off"
-            color="secondary"
-            autoFocus={autofocus}
-        />
-    );
+    <MUITextField
+        margin="dense"
+        variant="standard"
+        id={name}
+        label={name}
+        type="text"
+        inputProps={{ maxLength }}
+        value={value}
+        onChange={(e): void => {
+            setValue(e.target.value);
+        }}
+        fullWidth
+        autoComplete="off"
+        color="secondary"
+        autoFocus={autofocus}
+    />
+);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { FC, MouseEventHandler, ReactElement, useRef, useState } from "react";
 import {
     ListItem,
@@ -10,9 +11,9 @@ import {
     ListItemSecondaryActionProps as ListItemSecondaryActionPropsTypes,
     ListItemText,
     ListItemTextProps as ListItemTextPropsTypes,
-    makeStyles,
-} from "@material-ui/core";
-import { Theme } from "@material-ui/core/styles";
+    Theme,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme: Theme) => ({
     backgroundClass: {
@@ -236,7 +237,6 @@ const SwipeableListItem: FC<SwipeableListItemProps> = ({
                     onTouchMove={onTouchMove}
                     /* eslint-disable-next-line react/jsx-no-bind */
                     onTouchEnd={onDragEndTouch}
-                    // @ts-expect-error this is a library i have no idea
                     ref={listElementEl}
                     style={{
                         transform: `translateX(${diff}px)`,

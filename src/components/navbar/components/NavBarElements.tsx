@@ -1,4 +1,4 @@
-import { Toolbar } from "@material-ui/core";
+import { Toolbar } from "@mui/material";
 import React, { useContext } from "react";
 import { MenuButtons } from "./MenuButtons";
 import { MenuTitle } from "./MenuTitle";

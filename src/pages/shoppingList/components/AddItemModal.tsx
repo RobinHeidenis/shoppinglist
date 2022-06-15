@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from "react";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import AddIcon from "@material-ui/icons/Add";
-import { Fab, useScrollTrigger, Zoom } from "@material-ui/core";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import AddIcon from "@mui/icons-material/Add";
+import { Fab, useScrollTrigger, Zoom } from "@mui/material";
+import { createStyles, makeStyles } from "@mui/styles";
+import { Theme } from "@mui/material/styles";
 import { TextField } from "../../../components/ui/TextField";
 import { SearchTextField } from "./SearchTextField";
 import { useAddItemMutation, useAddStandardItemMutation } from "../../../slices/api/api.slice";
@@ -41,20 +42,23 @@ export const AddItemModal = ({ useHideOnScroll, modalType }: AddItemModalProps):
         threshold: 100,
     });
 
-    const HideOnScroll = useCallback((): JSX.Element => (
-        <Zoom in={!trigger}>
-            <Fab
-                color="secondary"
-                aria-label="add"
-                className={classes.fab}
-                onClick={(): void => {
-                    setDialogOpen(true);
-                }}
-            >
-                <AddIcon />
-            </Fab>
-        </Zoom>
-    ), [classes.fab, trigger]);
+    const HideOnScroll = useCallback(
+        (): JSX.Element => (
+            <Zoom in={!trigger}>
+                <Fab
+                    color="secondary"
+                    aria-label="add"
+                    className={classes.fab}
+                    onClick={(): void => {
+                        setDialogOpen(true);
+                    }}
+                >
+                    <AddIcon />
+                </Fab>
+            </Zoom>
+        ),
+        [classes.fab, trigger],
+    );
 
     const handleDialogClose = (): void => {
         setName("");

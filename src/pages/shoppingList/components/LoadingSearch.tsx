@@ -1,7 +1,6 @@
-import { Skeleton } from "@material-ui/lab";
-import { Card, CardContent, Typography } from "@material-ui/core";
+import { Card, CardContent, Skeleton, Typography } from "@mui/material";
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles(() => ({
     card: {
@@ -29,7 +28,7 @@ export const LoadingSearch = (): JSX.Element => {
     return (
         <Card className={classes.card}>
             <CardContent className={classes.cardContent}>
-                <Skeleton variant="rect" className={classes.skeleton} width="200px" height="200px" />
+                <Skeleton variant="rectangular" className={classes.skeleton} width="200px" height="200px" />
                 <Typography variant="h6">
                     <Skeleton />
                 </Typography>

@@ -1,6 +1,6 @@
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListItem from "@mui/material/ListItem";
 import React, { useContext } from "react";
 import history from "../lib/history";
 import { SideBarContext } from "../../contexts/SideBarContext";

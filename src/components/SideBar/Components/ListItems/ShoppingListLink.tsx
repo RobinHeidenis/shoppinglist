@@ -1,4 +1,4 @@
-import ListIcon from "@material-ui/icons/List";
+import ListIcon from "@mui/icons-material/List";
 import React from "react";
 import { MenuLink } from "../../../ui/MenuLink";
 

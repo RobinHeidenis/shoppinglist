@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import SearchIcon from "@material-ui/icons/Search";
-import ListIcon from "@material-ui/icons/List";
-import PostAddIcon from "@material-ui/icons/PostAdd";
-import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import SearchIcon from "@mui/icons-material/Search";
+import ListIcon from "@mui/icons-material/List";
+import PostAddIcon from "@mui/icons-material/PostAdd";
+import { BottomNavigation, BottomNavigationAction } from "@mui/material";
+import { Theme } from "@mui/material/styles";
+import { createStyles, makeStyles } from "@mui/styles";
 import { Search } from "./search";
 import { ItemList } from "./itemList";
 import { StandardItemList } from "./defaultItemList/StandardItemList";
@@ -18,31 +19,12 @@ interface ShoppingListProps {
 }
 
 /**
- * Styles for the {@link ShoppingList} functional component.
- */
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        bottomNavigation: {
-            position: "fixed",
-            bottom: 0,
-            width: "100%",
-        },
-        root: {
-            "&$selected": {
-                color: theme.palette.secondary.main,
-            },
-        },
-        selected: {},
-    }),
-);
-
-/**
  * Styles for the {@link BottomNavigationAction} component.
  */
 const useStylesForBottomNav = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            "&$selected": {
+            "&.Mui-selected": {
                 color: theme.palette.secondary.main,
             },
         },
@@ -51,10 +33,10 @@ const useStylesForBottomNav = makeStyles((theme: Theme) =>
 );
 
 export const ShoppingList = ({ setIsOnItemList }: ShoppingListProps): JSX.Element => {
-    const classes = useStyles();
     const styleForBottomNav = useStylesForBottomNav();
     const [bottomNavValue, setBottomNavValue] = useState(1);
     const [searchValue, setSearchValue] = useState("");
+    const [doSearch, setDoSearch] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [editingItem, setEditingItem] = useState<Item>({
@@ -79,7 +61,15 @@ export const ShoppingList = ({ setIsOnItemList }: ShoppingListProps): JSX.Elemen
         [bottomNavValue, setBottomNavValue],
     );
 
-    const searchContextValues = useMemo(() => ({ searchValue, setSearchValue }), [searchValue, setSearchValue]);
+    const searchContextValues = useMemo(
+        () => ({
+            searchValue,
+            setSearchValue,
+            doSearch,
+            setDoSearch,
+        }),
+        [searchValue, setSearchValue, doSearch, setDoSearch],
+    );
 
     const editContextValues = useMemo(
         () => ({
@@ -108,7 +98,11 @@ export const ShoppingList = ({ setIsOnItemList }: ShoppingListProps): JSX.Elemen
                                 setBottomNavValue(newValue as number);
                             }}
                             showLabels
-                            className={classes.bottomNavigation}
+                            sx={{
+                                position: "fixed",
+                                bottom: 0,
+                                width: "100%",
+                            }}
                         >
                             <BottomNavigationAction label="Standard" icon={<PostAddIcon />} classes={styleForBottomNav} />
                             <BottomNavigationAction label="List" icon={<ListIcon />} classes={styleForBottomNav} />

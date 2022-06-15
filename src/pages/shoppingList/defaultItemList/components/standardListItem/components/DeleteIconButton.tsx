@@ -1,5 +1,5 @@
-import { IconButton, ListItemIcon } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
+import { IconButton, ListItemIcon } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import React from "react";
 
 interface DeleteIconButtonProps {
@@ -20,7 +20,12 @@ interface DeleteIconButtonProps {
  */
 export const DeleteIconButton = ({ openDeleteConfirmation, itemId }: DeleteIconButtonProps): JSX.Element => (
     <ListItemIcon>
-        <IconButton onClick={(): void => { openDeleteConfirmation(itemId); }}>
+        <IconButton
+            onClick={(): void => {
+                openDeleteConfirmation(itemId);
+            }}
+            size="large"
+        >
             <DeleteIcon />
         </IconButton>
     </ListItemIcon>

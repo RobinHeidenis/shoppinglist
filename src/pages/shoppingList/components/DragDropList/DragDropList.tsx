@@ -1,6 +1,6 @@
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
-import List from "@material-ui/core/List";
-import { Divider } from "@material-ui/core";
+import List from "@mui/material/List";
+import { Divider } from "@mui/material";
 import React, { useState } from "react";
 import { Item } from "../../../../interfaces/item";
 import { SwipeableItem } from "../SwipeableItem";

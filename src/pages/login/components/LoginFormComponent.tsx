@@ -1,7 +1,8 @@
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { Theme } from "@mui/material/styles";
 import React, { FormEvent, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 import { Redirect, useLocation } from "react-router-dom";
 import { setCredentials } from "../../../slices/auth/auth.slice";
 import { useLoginMutation } from "../../../slices/api/api.slice";
@@ -10,7 +11,7 @@ import { useAppDispatch } from "../../../hooks/redux";
 /**
  * Styles for the {@link LoginFormComponent} functional component
  */
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
     form: {
         width: "100%",
         marginTop: theme.spacing(1),

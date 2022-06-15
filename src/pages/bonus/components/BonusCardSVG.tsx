@@ -1,6 +1,5 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core";
-import { createStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles } from "@mui/styles";
 import { Text } from "./Text";
 
 const useStyles = makeStyles(() =>
