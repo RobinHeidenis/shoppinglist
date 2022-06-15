@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { SwipeableDrawerContent } from "./Components/SwipeableDrawerContent";
 import { SideBarContext } from "../../contexts/SideBarContext";
 

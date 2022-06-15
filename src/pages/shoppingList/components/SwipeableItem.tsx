@@ -1,8 +1,8 @@
-import DoneIcon from "@material-ui/icons/Done";
-import UndoIcon from "@material-ui/icons/Undo";
-import DeleteIcon from "@material-ui/icons/Delete";
+import DoneIcon from "@mui/icons-material/Done";
+import UndoIcon from "@mui/icons-material/Undo";
+import DeleteIcon from "@mui/icons-material/Delete";
 import React from "react";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles } from "@mui/styles";
 import SwipeableListItem from "../../../components/lib/SwipeableListItem";
 import { Item, Status } from "../../../interfaces/item";
 import { useCheckItemMutation, useDeleteItemMutation, useUncheckItemMutation } from "../../../slices/api/api.slice";

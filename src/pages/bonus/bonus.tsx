@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { Box } from "@material-ui/core";
+import { Box } from "@mui/material";
 import { NavbarContext } from "../../contexts/NavbarContext";
 import { BonusCardSVG } from "./components/BonusCardSVG";
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import List from "@material-ui/core/List";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
+import List from "@mui/material/List";
+import { createStyles, makeStyles } from "@mui/styles";
 import { AddItemModal } from "../components/AddItemModal";
 import { LoadingList } from "../components/LoadingList";
 import { ConfirmationModal } from "../components/ConfirmationModal";

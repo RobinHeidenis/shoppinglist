@@ -1,5 +1,5 @@
-import LinkIcon from "@material-ui/icons/Link";
-import { IconButton } from "@material-ui/core";
+import LinkIcon from "@mui/icons-material/Link";
+import { IconButton } from "@mui/material";
 import React from "react";
 
 interface UrlIconButtonProps {
@@ -22,6 +22,7 @@ export const UrlIconButton = ({ url }: UrlIconButtonProps): JSX.Element => (
             e.stopPropagation();
             window.open(url);
         }}
+        size="large"
     >
         <LinkIcon />
     </IconButton>

@@ -1,6 +1,6 @@
-import { IconButton, ListItemSecondaryAction } from "@material-ui/core";
-import CheckIcon from "@material-ui/icons/Check";
-import AddIcon from "@material-ui/icons/Add";
+import { IconButton, ListItemSecondaryAction } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
+import AddIcon from "@mui/icons-material/Add";
 import React, { useState } from "react";
 import { useAddItemMutation } from "../../../../../../slices/api/api.slice";
 import { UnsubmittedItem } from "../../../../../../interfaces/item";
@@ -39,13 +39,17 @@ export const SecondaryAction = ({ item }: SecondaryActionProps): JSX.Element => 
             quantity: item.quantity ?? undefined,
             url: item.url ?? undefined,
         };
-        void addItem(newItem).then(() => { setChecked(true); });
+        void addItem(newItem).then(() => {
+            setChecked(true);
+        });
     };
 
     return (
         <ListItemSecondaryAction>
             {item.url && <UrlIconButton url={item.url} />}
-            <IconButton onClick={addItemToList}>{checked ? <CheckIcon /> : <AddIcon />}</IconButton>
+            <IconButton onClick={addItemToList} size="large">
+                {checked ? <CheckIcon /> : <AddIcon />}
+            </IconButton>
         </ListItemSecondaryAction>
     );
 };

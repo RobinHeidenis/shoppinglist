@@ -1,5 +1,5 @@
-import { MoreVert } from "@material-ui/icons";
-import { Menu, MenuItem } from "@material-ui/core";
+import { MoreVert } from "@mui/icons-material";
+import { Menu, MenuItem } from "@mui/material";
 import React, { useState } from "react";
 import { MenuIconButton } from "./MenuIconButton";
 import { useDeleteAllItemsMutation, useDeleteCheckedMutation } from "../../../slices/api/api.slice";

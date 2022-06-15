@@ -1,7 +1,7 @@
-import { IconButton } from "@material-ui/core";
-import LinkIcon from "@material-ui/icons/Link";
+import { IconButton } from "@mui/material";
+import LinkIcon from "@mui/icons-material/Link";
 import React from "react";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles } from "@mui/styles";
 import { Item, Status } from "../../../interfaces/item";
 
 /**
@@ -57,6 +57,7 @@ export const ItemLinkIcon = ({ item }: { item: Item }): JSX.Element => {
                 window.open(item.url);
             }}
             className={className}
+            size="large"
         >
             <LinkIcon />
         </IconButton>
