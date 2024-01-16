@@ -1,5 +1,8 @@
 # shoppinglist
 
+> [!WARNING]
+> This code is really bad, and will no longer be maintained, so I made a [new one](https://github.com/RobinHeidenis/hermes)
+
 A shopping list made for my family. More info can be found
 on [this page](https://robin.heidenis.com/projects/shoppinglist)
 It uses Reactjs and uses an [Express backend](https://github.com/RobinHeidenis/Shopping-List-Backend). For
